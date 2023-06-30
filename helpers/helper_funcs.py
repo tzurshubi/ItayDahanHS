@@ -16,7 +16,7 @@ AVAILABLE_NODES = 2
 BCC_DICT = 3
 NUM_OF_PAIRS = 5
 N = 0
-index_to_node = {}
+# index_to_node = {}
 
 
 def save_state(q, best_state, bound, OPEN, expansions, pruned, runtime, dimension=-1, best=False):
@@ -262,6 +262,7 @@ def max_disj_set_upper_bound(nodes, pairs, x_filter=False, y_filter=False, og_g=
     return counter
 
 
+
 def max_disj_set_upper_bound_actual_set(nodes, pairs):
     g = nx.Graph()
     for x in nodes:
@@ -480,7 +481,7 @@ def triconnected_components(component):
         return [comp_nodes]
     return components
 
-def draw_grid(folder_name, pic_name, graph, mat, start, target, index_to_node, path=[]):
+def draw_grid(pic_name, graph, mat, start, target, index_to_node, path=(), folder_name=None):
     start_available = tuple(diff(list(graph.nodes), {start}))
     start_path = (start,)
     state = State(start, start_path, start_available)
@@ -512,8 +513,9 @@ def draw_grid(folder_name, pic_name, graph, mat, start, target, index_to_node, p
     ax.set_yticks(np.arange(-.5, height, 1))
     plt.title('graph ' + str(pic_name))
     plt.show()
-#     save_results_to = f'{folder_name}/graph_{str(pic_name)}.png'
-#     fig.savefig(save_results_to)
+    if folder_name:
+        save_results_to = f'{folder_name}/graph_{str(pic_name)}.png'
+        fig.savefig(save_results_to)
 
 
 def remove_blocks(n, mat):

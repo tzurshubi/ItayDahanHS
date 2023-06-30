@@ -21,12 +21,14 @@ def get_h_and_g(state):
     return F[state][H_VALUE], F[state][G_VALUE]
 
 
-def state_value(state, weak_h, g, weight):
+def state_value(state, weak_h, g, weight, algorithm='a star'):
     global F
-    if state not in F.keys():
-        F[state] = ('weak', weak_h(state), g(state))
-    return weight * F[state][H_VALUE] + F[state][G_VALUE]  # TODO: check when to add the weight
-
+    if algorithm == 'a star':
+        if state not in F.keys():
+            F[state] = ('weak', weak_h(state), g(state))
+        return weight * F[state][H_VALUE] + F[state][G_VALUE]
+    else:
+        return weak_h(state), g(state)
 
 def set_to_strong_state_value(state, strong_h, g):
     global F

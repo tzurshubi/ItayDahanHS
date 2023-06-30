@@ -1,3 +1,8 @@
+from itertools import combinations
+
+from sage.graphs.connectivity import spqr_tree
+from sage.graphs.graph import Graph
+
 from heuristics.heuristics_helper_funcs import get_relevant_cuts
 from helpers.helper_funcs import all_pairs, diff, flatten, intersection, max_disj_set_upper_bound
 
@@ -123,16 +128,29 @@ def pairs_r(current_sn, tree, g, s, t):
     #     print(k, '\t', v)
     return list(set(s_edge_pairs + t_edge_pairs + cut_pairs))
 
+def get_neighbors_pairs(component, node):
+    node_neighbors = list(component.neighbors(node))
+#     print(in_node_neighbors)
+    pairs = set(combinations(node_neighbors, 2))
+#     print(pairs)
+    return pairs
 
-def get_max_nodes_spqr_new(component, in_node, out_node, x_filter=False, y_filter=False):
+def get_max_nodes_spqr_new(component, in_node, out_node, x_filter=False, y_filter=False, in_neighbors=False, out_neighbors=False):
     # print(f"s:{s}, t:{t}")
     component = component.copy()
     if not component.has_edge(in_node, out_node):
-        #         print(11)
+#         print(11)
         component.add_edge(in_node, out_node)
     comp_sage = Graph(component)
     tree = spqr_tree(comp_sage)
+#     for x in tree:
+#         print(x)
+#     print('--------------------------------')
     pairs = get_all_spqr_pairs_new(tree, component, in_node, out_node)
+    if in_neighbors:
+        pairs.update(get_neighbors_pairs(component, in_node))
+    if out_neighbors:
+        pairs.update(get_neighbors_pairs(component, out_node))
     res = max_disj_set_upper_bound(component.nodes, pairs, x_filter, y_filter, component)
     # print('ret', res)
-    return pairs
+    return res

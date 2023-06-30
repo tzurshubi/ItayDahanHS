@@ -1,7 +1,10 @@
 
 # recursive attempt
 import itertools
-import netwokx as nx
+import networkx as nx
+from sage.graphs.connectivity import spqr_tree
+from sage.graphs.graph import Graph
+
 from heuristics.heuristics_helper_funcs import get_relevant_cuts
 from helpers.helper_funcs import intersection, flatten, diff
 
