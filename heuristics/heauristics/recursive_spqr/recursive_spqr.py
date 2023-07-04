@@ -156,13 +156,13 @@ def find_root_sn(tree, s, t, sp_dict):
     return sorted([x for x in tree if ({s, t} & set(x[1].networkx_graph().nodes)) == {s, t}], key=lambda x: 0 if x[0] == 'P' else 1)[0]
 
 
-def get_max_nodes_spqr_recursive(component, in_node, out_node):
+def get_max_nodes_spqr_recursive(component, in_node, out_node, return_nodes=False):
     # print(f"s:{s}, t:{t}")
     #     with open('D:/Heuristic Tests/improved_spqr_results/'+str(cur_t)+'r_size.txt', "a+") as f:
     #         f.write(f'\ncomp len -- {len(component)}\n')
     comp = component.copy()
     if len(comp.nodes) == 2:
-        return len(comp.nodes)
+        return comp.nodes if return_nodes else len(comp.nodes)
     if not comp.has_edge(in_node, out_node):
         #         print(f'adding {(in_node, out_node)}')
         comp.add_edge(in_node, out_node)
@@ -175,4 +175,4 @@ def get_max_nodes_spqr_recursive(component, in_node, out_node):
     #     print(root_node)
     nodes = spqr_nodes(root_node, [], tree, comp, min(in_node, out_node),  max(in_node, out_node), sp_dict)
     # print('ret', res)
-    return len(nodes)
+    return nodes if return_nodes else len(nodes)

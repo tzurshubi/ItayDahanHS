@@ -6,26 +6,27 @@ from Definitions.state import State
 from algorithms.search_algorithms.actual_path.with_spqr.with_spqr import get_comp_path
 from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
 from experiments.experiment_helpers import write_header_file, write_to_file, write_to_csv_file, save_heuristic_plot, \
-    save_graph_picture, heuristics
+    save_graph_picture, heuristics, convert_to_latex, create_graphs_from_folder
 from helpers.COMMON import SNAKE_MODE, LSP_MODE, GRIDS_MODE, MAZE_MODE, CUBE_MODE
 from helpers.graph_builder_funcs import generate_hard_grids, generate_hypercube
 from helpers.helper_funcs import diff, bcc_thingy, intersection
 from heuristics.heuristics_interface_calls import snake_y_all_neighbors
 
 CUTOFF = -1
-TIMEOUT = 50
+TIMEOUT = 15000
 
 runs_per_params = 1
 weights = [1]  # [0.7 + 0.1 * i for i in range(6)]
-grid_sizes = [(10 * i, 10 * i) for i in range(1, 3)]
-block_ps = [0.1 * i for i in range(4, 6)]
+# grid_sizes = [(10 * i, 10 * i) for i in range(1, 3)]
+# block_ps = [0.1 * i for i in range(4, 6)]
 
 
 
 
 def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE, n=None, mode=LSP_MODE, algorithm=run_weighted):
     global best_path, best_path_len
-    header = ['Graph', 'Grid Size', 'Blocks', 'A* weight', 'Heuristic', 'Expansions', 'Runtime', 'Generated Nodes']
+    print(f'n: {n}')
+    header = ['Graph', 'Grid Size', 'Heuristic', 'path', 'first_hs', 'Expansions', 'Runtime', 'Generated Nodes']
     start_time = datetime.now()
     date_string = start_time.strftime("%d-%m-%Y-%H-%M-%S")
     directory = '/mnt/d/Heuristic Tests/Experiments/Experiment' + date_string
@@ -37,7 +38,7 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
     os.mkdir(plot_dir)
     os.mkdir(save_dir)
     csv_file_name = f'{directory}/test_map_{date_string}.csv'
-    text_file_name = f'{directory}/test_map_{date_string}.txt'
+    # text_file_name = f'{directory}/test_map_{date_string}.txt'
     latex_file_name = f'{directory}/test_map_latex_{date_string}.txt'
     write_header_file(csv_file_name, header)
     #     exp_flag = False
@@ -46,11 +47,14 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
     #     for i in range(10):
     #         mat = remove_blocks_rectangles_2(k, mat, og_maze)
     #         mats += [mat]
-    graphs = []
+
     if world == GRIDS_MODE:
-        for bp in block_ps:
-            for n, m in grid_sizes:
-                graphs += [(bp,) + g for g in generate_hard_grids(runs_per_params, n, m, bp)]
+        grid_n = 13
+        graphs = create_graphs_from_folder('/mnt/c/Users/itay/Desktop/notebooks/all_graphs/mazes/maze2', grid_n, grid_n,
+                                           mode=mode)
+        # for bp in block_ps:
+        #     for n, m in grid_sizes:
+        #         graphs += [(bp,) + g for g in generate_hard_grids(runs_per_params, n, m, bp)]
     elif world == MAZE_MODE:
         pass
     elif world == CUBE_MODE:
@@ -65,13 +69,13 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
     ls_per_run = {}
     expansions_per_run = {}
     for name, _, _ in heuristics:
-        hs_per_run[name] = [0] * runs
-        ls_per_run[name] = [0] * runs
-        expansions_per_run[name] = [0] * runs
-    graph_i = 0
+        hs_per_run[name] = dict()
+        ls_per_run[name] = dict()
+        expansions_per_run[name] = dict()
+    # graph_i = 0
     for w in weights:
         print('w == ', w)
-        for bp, mat, graph, start, target, itn in graphs:
+        for graph_i, mat, graph, start, target, itn in graphs:
             print(f"GRAPH {graph_i}:")
             for name, h, incremental in heuristics:
                 path, expansions, runtime, hs, ls, ns, ng = algorithm(h,
@@ -82,8 +86,8 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
                                                                       CUTOFF,
                                                                       TIMEOUT,
                                                                       incremental,
-                                                                      save_dir,
-                                                                      n,
+                                                                      save_dir=save_dir,
+                                                                      n=n,
                                                                       mode=mode
                                                                       )
 
@@ -102,18 +106,16 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
                 # print(
                 #     f"\tNAME: {name}, \t\tPATH-LENGTH: {len(path)}, \t\tEXPANSIONS: {expansions} \t\tRUNTIME: {runtime}")
                 if n is not None:
-                    write_to_file(text_file_name, n, name, graph, expansions, runtime, hs,
-                                  ls, -1, w, -1)
+                    # write_to_file(text_file_name, n, name, graph, expansions, runtime, hs,
+                    #               ls, -1, w, -1)
                     write_to_csv_file(csv_file_name, n, name, expansions, runtime, last_hs, w, first_hs, ng)
                 else:
-                    write_to_file(text_file_name, graph_i, name, mat, expansions, runtime, hs, ls, n, w, bp)
-                    write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, n, w, bp, ng)
-            if mode in (GRIDS_MODE, MAZE_MODE):
+                    write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, grid_n, first_hs, len(path), ng)
+            if world in (GRIDS_MODE, MAZE_MODE):
                 save_heuristic_plot(plot_dir, graph_i, hs_per_run)
                 save_graph_picture(graph_dir, graph_i, mat, graph, start, target, itn)
-                graph_i += 1
 
-        # convert_to_latex(csv_file_name, snake_latex_file_name)
+        convert_to_latex(csv_file_name, latex_file_name)
 #
 def run_other(graph, start, target):
     start_available = tuple(diff(list(graph.nodes), {start}))

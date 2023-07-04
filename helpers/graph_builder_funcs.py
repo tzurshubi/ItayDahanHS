@@ -1,6 +1,16 @@
 # graph builder
+import os
 import random
+import shutil
+
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
 import networkx as nx
+
+from experiments.tests.grid_cutter import find_largest_rectangle
+from helpers.COMMON import LSP_MODE, SNAKE_MODE
 from helpers.helper_funcs import flatten
 from helpers.index_to_node_stuff import update_index_to_node
 
@@ -311,6 +321,73 @@ def generate_hard_grid(height, width, block_p, is_snake=False):
     return grid, graph, start, target, index_to_node
 
 
+def graph_for_grid(grid, start, target, mode=LSP_MODE):
+    height = len(grid)
+    width = len(grid[0])
+    graph = nx.Graph()
+    index_to_node = {}
+    node_index = 0
+    node_to_index = {}
+    # set up edges
+    for i in range(height):
+        for j in range(width):
+            if grid[i][j]:
+                continue
+            graph.add_node(node_index)
+            node_to_index[(i, j)] = node_index
+            index_to_node[node_index] = (i, j)
+            if i > 0 and not grid[i - 1][j]:
+                graph.add_edge(node_index, node_to_index[(i - 1, j)])
+            if j > 0 and not grid[i][j - 1]:
+                graph.add_edge(node_index, node_to_index[(i, j - 1)])
+            node_index += 1
+    start, target = node_to_index[start], node_to_index[target]
+    try:
+        nx.shortest_path(graph, source=start, target=target)
+    except Exception:
+        raise Exception('no path between start to target')
+
+    for node in graph.nodes:
+        graph.nodes[node]["constraint_nodes"] = list(graph.neighbors(node)) if mode==SNAKE_MODE else [node]
+    return grid, graph, start, target, index_to_node
+
+
+def parse_graph_png(path, rows, cols, mode=LSP_MODE, return_mat=False):
+    p = (255, 0, 255, 0)
+    start = ()
+    target = ()
+    img = Image.open(path).convert("CMYK")
+    data = np.array(np.asarray(img))
+    skip_row = data.shape[0] / rows
+    skip_col = data.shape[1] / cols
+    mat = []
+
+    for j in range(cols):
+        mat_row = []
+        for i in range(rows):
+
+            r = int(i * skip_row) + int(skip_row / 2)
+            c = int(j * skip_col) + int(skip_col / 2)
+            #         print(i,j,r,c)
+
+            v = tuple(data[r, c])
+            mat_row += [v]
+            if (i,j) in [(0,1), (1,0)]:
+                print(v)
+            if v == (0, 255, 0, 0):
+                start = (j, i)
+            if v == (255, 0, 255, 0):
+                target = (j, i)
+
+            data[r, c] = p
+            data[r, c + 1] = p
+            data[r + 1, c] = p
+            data[r + 1, c + 1] = p
+        mat += [mat_row]
+    mat = [[1 if m == (255, 255, 255, 0) else 0 for m in m_row] for m_row in mat]
+    return mat if return_mat else graph_for_grid(mat, start, target, mode=mode)
+
+
 def generate_maze(n, bs):
     mat = [[0] * n] * n
     indexes = flatten(
@@ -335,3 +412,12 @@ def generate_hypercube(n):
         node_to_index[node] = i
         i += 1
     return cube, node_to_index
+
+def crop_and_parse_graph(image_path, rows, cols, mode=LSP_MODE):
+    cropped_img = find_largest_rectangle(image_path)
+    # Save the cropped image
+    cropped_img_path = image_path[:-4]+'_crop.png'
+    cv2.imwrite(cropped_img_path, cropped_img)
+    res = parse_graph_png(cropped_img_path, rows, cols, mode=mode)
+    os.remove(cropped_img_path)
+    return res

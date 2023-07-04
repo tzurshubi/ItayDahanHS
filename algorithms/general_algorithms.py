@@ -1,7 +1,7 @@
 from Definitions.bi_comp_entry import BiCompEntry
 from helpers.COMMON import LSP_MODE
-from helpers.helper_funcs import get_dis_pairs, max_disj_set_upper_bound, bcc_thingy, intersection
-from heuristics.heauristics.snake_spqr.snake_spqr import snake_exclusion_set_spqr
+from helpers.helper_funcs import bcc_thingy, intersection
+from heuristics.heauristics.snake_spqr.snake_new_spqr.snake_spqr import snake_exclusion_set_spqr
 
 NUM_OF_PAIRS = 5
 N = 0

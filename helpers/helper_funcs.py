@@ -42,6 +42,7 @@ def reduce_dimensions(n, d, nodes):
 
 
 def check_dimension(n, node):
+    # print(f"n: {n}")
     try:
         i = node.index(1)
         return n - i
@@ -492,7 +493,7 @@ def draw_grid(pic_name, graph, mat, start, target, index_to_node, path=(), folde
     height = len(mat)
     width = len(mat[0])
     data = [[(0, 0, 0) if mat[j][i] else (255, 255, 255) for j in range(len(mat))] for i in range(len(mat[0]))]
-    if comps:
+    if comps and comps != -1:
         for i in range(len(comps)):
             color = comp_colors[i % len(comp_colors)]
             comp = comps[i]

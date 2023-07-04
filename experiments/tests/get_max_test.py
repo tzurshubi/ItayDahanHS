@@ -1,6 +1,8 @@
+import time as t
 from algorithms.general_algorithms import ex_pairs
 from algorithms.incremental_algorithms import ex_pairs_incremental
 from helpers.helper_funcs import max_disj_set_upper_bound
+from helpers.index_to_node_stuff import index_to_node
 from heuristics.heauristics.naive_spqr.naive_spqr import get_max_nodes_spqr_new
 from heuristics.heauristics.recursive_spqr.recursive_spqr import get_max_nodes_spqr_recursive
 
@@ -21,9 +23,10 @@ def is_legal(nodes, pairs):
 
 def get_max_test(comp, in_node, out_node):
     global pair_i
+    global good_bcc
 
-    nodes = get_max_nodes_spqr_recursive(comp, in_node, out_node)
-    pairs = get_max_nodes_spqr_new(comp, in_node, out_node)
+    nodes = get_max_nodes_spqr_recursive(comp, in_node, out_node, return_nodes=True)
+    pairs = get_max_nodes_spqr_new(comp, in_node, out_node, return_pairs=True)
 
     res_new = len(nodes)
     res_basic = max_disj_set_upper_bound(comp.nodes, pairs, False, False, comp)
@@ -31,19 +34,19 @@ def get_max_test(comp, in_node, out_node):
     # print('------')
     # print('2 - 3', diff(res2, res3))
     # print('3 - 2', diff(res3, res2))
-    with open('D:/Heuristic Tests/improved_spqr_results/' + str(cur_t) + 'index.txt', "a+") as f:
+    with open('/mnt/d/Heuristic Tests/recursive_spqr_results/' + str(cur_t) + 'index.txt', "a+") as f:
         f.write(f'{pair_i}\n')
         f.write('\n\n')
 
     if not is_legal(nodes, pairs):
-        with open('D:/Heuristic Tests/improved_spqr_results/' + str(cur_t) + 'not_supposed_to_happen.txt', "a+") as f:
+        with open('/mnt/d/Heuristic Tests/recursive_spqr_results/' + str(cur_t) + 'not_supposed_to_happen.txt', "a+") as f:
             f.write(
                 f'{pair_i} \nsource, target = {in_node, out_node} \nnodes = {list(comp.nodes)}\nedges = {list(comp.edges)} \n')
             f.write(f'itn = {str(index_to_node)}\n')
             f.write('\n\n')
 
     if res_basic > res_new:
-        with open('D:/Heuristic Tests/improved_spqr_results/' + str(cur_t) + 'woops.txt', "a+") as f:
+        with open('/mnt/d/Heuristic Tests/recursive_spqr_results/' + str(cur_t) + 'woops.txt', "a+") as f:
             f.write(
                 f'{pair_i} \nsource, target = {in_node, out_node} \nnodes = {list(comp.nodes)}\nedges = {list(comp.edges)} \n')
             f.write(f'itn = {str(index_to_node)}\n')
@@ -51,7 +54,7 @@ def get_max_test(comp, in_node, out_node):
 
     if res_basic < res_new:
         good_bcc += 1
-        with open('D:/Heuristic Tests/improved_spqr_results/' + str(cur_t) + 'yas.txt', "a+") as f:
+        with open('/mnt/d/Heuristic Tests/recursive_spqr_results/' + str(cur_t) + 'yas.txt', "a+") as f:
             f.write(
                 f'{good_bcc},  {good_bcc / pair_i} \nsource, target = {in_node, out_node} \nnodes = {list(comp.nodes)}\nedges = {list(comp.edges)} \n')
             f.write(f'itn = {str(index_to_node)}\n')

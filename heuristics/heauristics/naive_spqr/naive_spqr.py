@@ -135,7 +135,7 @@ def get_neighbors_pairs(component, node):
 #     print(pairs)
     return pairs
 
-def get_max_nodes_spqr_new(component, in_node, out_node, x_filter=False, y_filter=False, in_neighbors=False, out_neighbors=False):
+def get_max_nodes_spqr_new(component, in_node, out_node, x_filter=False, y_filter=False, in_neighbors=False, out_neighbors=False, return_pairs=False):
     # print(f"s:{s}, t:{t}")
     component = component.copy()
     if not component.has_edge(in_node, out_node):
@@ -151,6 +151,6 @@ def get_max_nodes_spqr_new(component, in_node, out_node, x_filter=False, y_filte
         pairs.update(get_neighbors_pairs(component, in_node))
     if out_neighbors:
         pairs.update(get_neighbors_pairs(component, out_node))
-    res = max_disj_set_upper_bound(component.nodes, pairs, x_filter, y_filter, component)
+    res = pairs if return_pairs else max_disj_set_upper_bound(component.nodes, pairs, x_filter, y_filter, component)
     # print('ret', res)
     return res

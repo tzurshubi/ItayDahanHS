@@ -2,7 +2,7 @@ import time as t
 from algorithms.algorithms_helpers import state_value, expand_with_constraints
 
 
-def max_weighted_a_star(G, start_state, is_goal, h, g, is_incremental=False, expand=expand_with_constraints, weight=1, cutoff=-1, timeout=-1):
+def max_weighted_a_star(G, start_state, is_goal, h, g, is_incremental=False, hypercube_dimension=None, expand=expand_with_constraints, weight=1, cutoff=-1, timeout=-1):
     global F
     global state_index
 
@@ -36,7 +36,7 @@ def max_weighted_a_star(G, start_state, is_goal, h, g, is_incremental=False, exp
             return q, (expansions, t.time() - start_time, h_vals, lens, nodes_chosen, len(OPEN) + len(CLOSED))
         if is_goal(q):
             return q, (expansions, t.time() - start_time, h_vals, lens, nodes_chosen, len(OPEN) + len(CLOSED))
-        OPEN += expand(q, G, is_incremental, OPEN, CLOSED)
+        OPEN += expand(q, G, is_incremental, OPEN, CLOSED, hypercube_dimension=hypercube_dimension)
         expansions += 1
         CLOSED += [q]
     return -1, (expansions, t.time() - start_time, h_vals, lens, nodes_chosen, len(OPEN) + len(CLOSED))

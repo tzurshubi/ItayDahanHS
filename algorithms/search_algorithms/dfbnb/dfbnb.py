@@ -14,8 +14,8 @@ def max_dfbnb_iterative(G, start_state, is_goal, h, g, is_incremental=False, exp
 
 
     bounds = {3: 3, 4: 5, 5: 11, 6: 23, 7: 45, 8: 93, 9: 187, 10: 365, 11: 691, 12: 1343, 13: 2593}
-    bound = bounds[hypercube_dimension]
-
+    # bound = bounds[hypercube_dimension]
+    bound = 0
     best_state = start_state
 
     #     OPEN = np.zeros((bound * 2, hypercube_dimension))
@@ -29,7 +29,7 @@ def max_dfbnb_iterative(G, start_state, is_goal, h, g, is_incremental=False, exp
     #     lens = []
     #     OPEN[0][0] = start_state
     OPEN = [start_state]
-    #     CLOSED = []
+    CLOSED = []
     expansions = 0
     pruned = 0
 
@@ -65,7 +65,7 @@ def max_dfbnb_iterative(G, start_state, is_goal, h, g, is_incremental=False, exp
                 print(f'found path: {bound - 1}')
                 # save_state(save_dir, q, best_state, bound, OPEN, expansions, pruned, t.time() - start_time, dimension=hypercube_dimension, best=True)
             else:
-                OPEN += expand(q, G, is_incremental, hypercube_dimension, OPEN)
+                OPEN += expand(q, G, is_incremental, OPEN=OPEN, hypercube_dimension=hypercube_dimension)
                 #                 if len(expanded) == 0:
                 #                     print(f'open len: {len(OPEN)}')
                 #                     print(f'depth: {len(q.path)}')

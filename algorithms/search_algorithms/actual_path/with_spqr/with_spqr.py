@@ -51,7 +51,7 @@ def nodes_r_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_di
     local_g.add_edges_from([e for e in super_n_nodes_dict.keys() if e not in local_g.edges])
 
     graph = get_sub_search_graph(in_node, out_node, local_g, super_n_nodes_dict)
-    draw_grid("", graph, index_to_node_stuff.grid, in_node, out_node, index_to_node_stuff.index_to_node, path=[])
+    # draw_grid("", graph, index_to_node_stuff.grid, in_node, out_node, index_to_node_stuff.index_to_node, path=[])
     path = run_weighted(spqr_recursive_h, graph, in_node, out_node, 1, 50000, 2000, True, mode="not snake")[0]
     path = path if not parent_sn else diff(path, [in_node, out_node])
     return path
@@ -65,8 +65,8 @@ def nodes_s_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_di
     in_out_sn = [n for (i, o), n in super_n_nodes if (i, o) == (in_node, out_node)]
     ret = []
     if in_out_sn:
-        print('iosn', in_node, out_node, in_out_sn)
-        print(g.has_edge(in_node, out_node))
+        # print('iosn', in_node, out_node, in_out_sn)
+        # print(g.has_edge(in_node, out_node))
         # with open('D:/Heuristic Tests/improved_spqr_results/'+str(cur_t)+'weird_s.txt', "a+") as f:
         #     f.write(f'{pair_i} \nsource, target = {in_node, out_node} \nnodes = {list(g.nodes)}\nedges = {list(g.edges)} \n')
         #     f.write(f'itn = {str(index_to_node)}\n')

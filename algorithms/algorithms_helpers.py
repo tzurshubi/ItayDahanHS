@@ -37,7 +37,7 @@ def set_to_strong_state_value(state, strong_h, g):
     # return F[state][F_VALUE]
 
 
-def expand_with_constraints(state, G, is_incremental, OPEN=[], CLOSED=[]):
+def expand_with_constraints(state, G, is_incremental, OPEN=[], CLOSED=[], hypercube_dimension=None):
     ret = []
     bccs = state.bccs
     current_v = state.current
@@ -61,7 +61,7 @@ def expand_with_constraints(state, G, is_incremental, OPEN=[], CLOSED=[]):
     return ret
 
 
-def expand_with_snake_constraints(state, G, is_incremental, hypercube_dimension, OPEN=[], CLOSED=[]):
+def expand_with_snake_constraints(state, G, is_incremental, OPEN=[], CLOSED=[], hypercube_dimension=None):
     ret = []
     bccs = state.bccs
     current_v = state.current
