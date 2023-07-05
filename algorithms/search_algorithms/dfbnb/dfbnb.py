@@ -3,7 +3,7 @@ from algorithms.algorithms_helpers import state_value, expand_with_snake_constra
 from helpers.helper_funcs import save_state
 
 
-def max_dfbnb_iterative(G, start_state, is_goal, h, g, is_incremental=False, expand=expand_with_snake_constraints, weight=1, cutoff=-1, timeout=-1, hypercube_dimension=-1, save_dir=-1):
+def max_dfbnb_iterative(G, start_state, is_goal, h, g, is_incremental=False, expand=expand_with_snake_constraints, weight=1, cutoff=-1, timeout=-1, hypercube_dimension=None, save_dir=-1):
     #     global F
     global state_index
     global best_state
@@ -14,8 +14,9 @@ def max_dfbnb_iterative(G, start_state, is_goal, h, g, is_incremental=False, exp
 
 
     bounds = {3: 3, 4: 5, 5: 11, 6: 23, 7: 45, 8: 93, 9: 187, 10: 365, 11: 691, 12: 1343, 13: 2593}
-    # bound = bounds[hypercube_dimension]
-    bound = 0
+
+    bound = 0 if hypercube_dimension is None else bounds[hypercube_dimension]
+    # bound = 0
     best_state = start_state
 
     #     OPEN = np.zeros((bound * 2, hypercube_dimension))

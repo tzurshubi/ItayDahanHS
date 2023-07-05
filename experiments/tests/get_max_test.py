@@ -5,6 +5,8 @@ from helpers.helper_funcs import max_disj_set_upper_bound
 from helpers.index_to_node_stuff import index_to_node
 from heuristics.heauristics.naive_spqr.naive_spqr import get_max_nodes_spqr_new
 from heuristics.heauristics.recursive_spqr.recursive_spqr import get_max_nodes_spqr_recursive
+from heuristics.heauristics.snake_spqr.snake_new_spqr.snake_spqr import snake_exclusion_pairs_spqr, \
+    get_max_nodes_spqr_snake
 
 pair_i = 0
 good_bcc = 0
@@ -25,11 +27,11 @@ def get_max_test(comp, in_node, out_node):
     global pair_i
     global good_bcc
 
-    nodes = get_max_nodes_spqr_recursive(comp, in_node, out_node, return_nodes=True)
-    pairs = get_max_nodes_spqr_new(comp, in_node, out_node, return_pairs=True)
+    h1 = snake_exclusion_pairs_spqr(comp, in_node, out_node, False, True, True, True)
+    h2 = get_max_nodes_spqr_snake(comp, in_node, out_node, False, True, True, True)
 
-    res_new = len(nodes)
-    res_basic = max_disj_set_upper_bound(comp.nodes, pairs, False, False, comp)
+    res_new = h1
+    res_basic = h2
 
     # print('------')
     # print('2 - 3', diff(res2, res3))
@@ -38,12 +40,12 @@ def get_max_test(comp, in_node, out_node):
         f.write(f'{pair_i}\n')
         f.write('\n\n')
 
-    if not is_legal(nodes, pairs):
-        with open('/mnt/d/Heuristic Tests/recursive_spqr_results/' + str(cur_t) + 'not_supposed_to_happen.txt', "a+") as f:
-            f.write(
-                f'{pair_i} \nsource, target = {in_node, out_node} \nnodes = {list(comp.nodes)}\nedges = {list(comp.edges)} \n')
-            f.write(f'itn = {str(index_to_node)}\n')
-            f.write('\n\n')
+    # if not is_legal(nodes, pairs):
+    #     with open('/mnt/d/Heuristic Tests/recursive_spqr_results/' + str(cur_t) + 'not_supposed_to_happen.txt', "a+") as f:
+    #         f.write(
+    #             f'{pair_i} \nsource, target = {in_node, out_node} \nnodes = {list(comp.nodes)}\nedges = {list(comp.edges)} \n')
+    #         f.write(f'itn = {str(index_to_node)}\n')
+    #         f.write('\n\n')
 
     if res_basic > res_new:
         with open('/mnt/d/Heuristic Tests/recursive_spqr_results/' + str(cur_t) + 'woops.txt', "a+") as f:

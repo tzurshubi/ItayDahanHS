@@ -69,7 +69,8 @@ def expand_with_snake_constraints(state, G, is_incremental, OPEN=[], CLOSED=[], 
     neighbors = list(G.neighbors(current_v))
 
     # Only consider neighbors with dimension <= current dimension + 1
-    neighbors = [v for v in neighbors if check_dimension(hypercube_dimension, v) <= dimension + 1]
+    if hypercube_dimension is not None:
+        neighbors = [v for v in neighbors if check_dimension(hypercube_dimension, v) <= dimension + 1]
 
     available = state.available_nodes
     next_out_node = bccs[0].out_node if is_incremental else -1
@@ -86,7 +87,8 @@ def expand_with_snake_constraints(state, G, is_incremental, OPEN=[], CLOSED=[], 
             continue
         new_path = path + (v,)
         new_state = State(v, new_path, new_availables)
-        new_state.update_dimension(max(dimension, check_dimension(hypercube_dimension, v)))
+        if hypercube_dimension is not None:
+            new_state.update_dimension(max(dimension, check_dimension(hypercube_dimension, v)))
         if is_incremental:
             new_bccs = bccs[1:] if v == next_out_node else bccs
             new_state.bccs = new_bccs

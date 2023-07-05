@@ -49,8 +49,8 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
     #         mats += [mat]
 
     if world == GRIDS_MODE:
-        grid_n = 13
-        graphs = create_graphs_from_folder('/mnt/c/Users/itay/Desktop/notebooks/all_graphs/mazes/maze2', grid_n, grid_n,
+        grid_n = 20
+        graphs = create_graphs_from_folder('/mnt/c/Users/itay/Desktop/notebooks/all_graphs/grids_20', grid_n, grid_n,
                                            mode=mode)
         # for bp in block_ps:
         #     for n, m in grid_sizes:

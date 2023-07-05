@@ -15,7 +15,7 @@ def get_goal_func(target):
 
 
 def run_weighted(heuristic, graph, start, target, weight, cutoff, timeout, is_incremental, n=None, save_dir="", mode=LSP_MODE):
-    if mode == SNAKE_MODE:
+    if n is not None:
         print(f'n: {n}')
         first_node = tuple([0] * (n - 1) + [1])
         not_availables = diff([first_node] + list(graph.neighbors(first_node)), [start, target])

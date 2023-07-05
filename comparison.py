@@ -13,7 +13,7 @@ import time as t
 
 
 def run_mom_test():
-    mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=LSP_MODE, n=None)
+    mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=SNAKE_MODE, n=None)
 
 
 def compare_alt_to_astar():

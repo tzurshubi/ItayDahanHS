@@ -4,6 +4,8 @@ from heuristics.heauristics.naive_spqr.naive_spqr import get_max_nodes_spqr_new
 from heuristics.heauristics.old_spqr.old_spqr import get_max_nodes_spqr_old
 from heuristics.heauristics.recursive_spqr.recursive_spqr import get_max_nodes_spqr_recursive
 from algorithms.incremental_algorithms import ex_pairs_incremental
+from heuristics.heauristics.snake_spqr.snake_new_spqr.snake_spqr import get_max_nodes_spqr_snake, \
+    snake_exclusion_pairs_spqr
 
 
 def spqr_recursive_h(state, G, target, is_incremental=False):
@@ -24,8 +26,8 @@ def ex_pairs_using_old_spqr(state, G, target, is_incremental=False, mode=LSP_MOD
 
 def snake_ex_pairs_using_spqr_prune(state, G, target, is_incremental=False, x_filter=False, y_filter=False, in_neighbors=False, out_neighbors=False):
     if is_incremental:
-        return ex_pairs_incremental(state, G, target, lambda g, i, o: get_max_nodes_spqr_new(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE)
-    return ex_pairs(state, G, target, lambda g,i,o: get_max_nodes_spqr_new(g, i, o), mode=SNAKE_MODE)
+        return ex_pairs_incremental(state, G, target, lambda g, i, o: snake_exclusion_pairs_spqr(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE)
+    return ex_pairs(state, G, target, lambda g,i,o: snake_exclusion_pairs_spqr(g, i, o), mode=SNAKE_MODE)
 
 def snake_rec_spqr(state, G, target, is_incremental=False):
     if is_incremental:

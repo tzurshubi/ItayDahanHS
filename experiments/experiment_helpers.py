@@ -3,6 +3,7 @@ import os
 
 from matplotlib import pyplot as plt
 
+from experiments.tests.get_max_test import get_max_test, test_new_spqr
 from helpers.COMMON import LSP_MODE
 from helpers.graph_builder_funcs import parse_graph_png, crop_and_parse_graph
 # from experiments.experiment import heuristics
@@ -13,21 +14,19 @@ from heuristics.heuristics_interface_calls import snake_y_all_neighbors, snake_r
 
 heuristics = [
         # ["bcc x", count_nodes_bcc_x, False],
-        ["bcc", count_nodes_bcc , False],
-        ["bcc inc", count_nodes_bcc , True],
+        # ["bcc", count_nodes_bcc , False],
+        # ["bcc inc", count_nodes_bcc , True],
         # ["bcc y incremental", count_nodes_bcc_y, True],
         # ["spqr", ex_pairs_using_spqr, True],
     #     ["snake spqr", snake_only, True],
     #     ["snake spqr y", snake_y, True],
     #     ["snake spqr y in neighbors", snake_y_in_neighbors, True],
-    #     ["snake spqr y all neighbors", snake_y_all_neighbors, Tru
-    #
-    #
-    #     e],
+    #     ["snake spqr y all neighbors", snake_y_all_neighbors, True],
         # ["snake spqr y recursive", snake_rec_spqr, True],
-    ["old spqr", ex_pairs_using_spqr, True],
-    ["new spqr", ex_pairs_using_spqr, True],
-    ["spqr rec", spqr_recursive_h, True]
+    # ["old spqr", ex_pairs_using_spqr, True],
+    # ["new spqr", ex_pairs_using_spqr, True],
+    # ["spqr rec", spqr_recursive_h, True]
+    ['test', test_new_spqr, True]
 
 ]
 def build_mazes():
