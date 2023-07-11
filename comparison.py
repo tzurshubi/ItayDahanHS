@@ -13,7 +13,7 @@ import time as t
 
 
 def run_mom_test():
-    mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=SNAKE_MODE, n=None)
+    mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=LSP_MODE, n=None)
 
 
 def compare_alt_to_astar():
@@ -40,12 +40,12 @@ def compare_alt_to_astar():
     draw_grid("astar", graph, grid, start, target, index_to_node, path=path_alt)
 
 
-# def recursive_vs_pairs():
-#     while True:
-#         grid, graph, start, target, index_to_node = generate_hard_grid(50, 50, 0.5, is_snake=False)
-#         index_to_node_stuff.index_to_node = index_to_node
-#         index_to_node_stuff.grid = grid
-#         ares = run_weighted(test_new_spqr, graph, start, target, 1, 50000, 2000, True, mode=LSP_MODE)
+def recursive_vs_pairs():
+    grid, graph, start, target, index_to_node = crop_and_parse_graph(
+        '/mnt/c/Users/itay/Desktop/notebooks/all_graphs/grids_20/graph_17.png', 20, 20)
+    index_to_node_stuff.index_to_node = index_to_node
+    index_to_node_stuff.grid = grid
+    ares = run_weighted(test_new_spqr, graph, start, target, 1, 50000, 2000, True, mode=LSP_MODE)
 
 
 

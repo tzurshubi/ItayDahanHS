@@ -18,6 +18,7 @@ def max_weighted_a_star(G, start_state, is_goal, h, g, is_incremental=False, hyp
     OPEN = [start_state]
     CLOSED = []
     expansions = 0
+    count=0
     while OPEN:
         # if expansions != 0 and expansions % 1000 == 0:
         #     print(expansions)
@@ -31,6 +32,11 @@ def max_weighted_a_star(G, start_state, is_goal, h, g, is_incremental=False, hyp
         h_vals += [get_state_value(q)]
         lens += [len(q.path)]
         nodes_chosen += [q.current]
+
+        print(h_vals)
+        count += 1
+        if count > 2:
+            return q, (expansions, t.time() - start_time, h_vals, lens, nodes_chosen, len(OPEN) + len(CLOSED))
 
         if expansions > cutoff > -1 or t.time() - start_time > timeout > -1:
             return q, (expansions, t.time() - start_time, h_vals, lens, nodes_chosen, len(OPEN) + len(CLOSED))
