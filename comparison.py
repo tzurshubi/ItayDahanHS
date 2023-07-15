@@ -1,14 +1,15 @@
 import os
 
-from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
-from algorithms.search_algorithms.dfbnb.run_dfbnb import run_dfbnb
-from experiments.experiment import run_other, mother_of_tests
-from experiments.tests.get_max_test import test_new_spqr
+# from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
+# from algorithms.search_algorithms.dfbnb.run_dfbnb import run_dfbnb
+# from experiments.experiment import run_other, mother_of_tests
+# from experiments.tests.get_max_test import test_new_spqr
+# from helpers import index_to_node_stuff
+# from helpers.COMMON import *
 from helpers import index_to_node_stuff
-from helpers.COMMON import *
-from helpers.graph_builder_funcs import generate_hard_grid, parse_graph_png, crop_and_parse_graph
+from helpers.graph_builder_funcs import generate_hard_grid, parse_graph_png, crop_and_parse_graph, graph_for_grid
 from helpers.helper_funcs import draw_grid
-from heuristics.heuristics_interface_calls import spqr_recursive_h, ex_pairs_using_spqr
+# from heuristics.heuristics_interface_calls import spqr_recursive_h, ex_pairs_using_spqr
 import time as t
 
 
@@ -50,5 +51,52 @@ def compare_alt_to_astar():
 
 
 if __name__ == '__main__':
-    run_mom_test()
+
+    X=1
+    S=0
+    T=0
+
+    grid = [
+        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
+        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
+        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
+        [X,X,X,X,X,0,0,0,0,0,0,0,0,0,X,X,X,X,X,X,X],
+        [0,0,0,0,0,T,0,0,0,0,0,0,0,S,0,0,0,0,0,0,0],
+        [0,X,X,X,X,0,0,0,0,0,0,0,0,0,X,X,X,X,X,X,0],
+        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    ]
+
+    start = (13,5)
+    target = (4,5)
+    grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=X)
+    index_to_node_stuff.index_to_node = index_to_node
+    index_to_node_stuff.grid = grid
+    draw_grid("", graph, grid, start, target, index_to_node, path=[])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

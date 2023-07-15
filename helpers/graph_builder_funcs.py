@@ -3,13 +3,13 @@ import os
 import random
 import shutil
 
-import cv2
+# import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import networkx as nx
 
-from experiments.tests.grid_cutter import find_largest_rectangle
+# from experiments.tests.grid_cutter import find_largest_rectangle
 from helpers.COMMON import LSP_MODE, SNAKE_MODE
 from helpers.helper_funcs import flatten
 from helpers.index_to_node_stuff import update_index_to_node

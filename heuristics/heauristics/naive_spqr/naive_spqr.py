@@ -1,7 +1,7 @@
 from itertools import combinations
 
-from sage.graphs.connectivity import spqr_tree
-from sage.graphs.graph import Graph
+# from sage.graphs.connectivity import spqr_tree
+# from sage.graphs.graph import Graph
 
 from heuristics.heuristics_helper_funcs import get_relevant_cuts
 from helpers.helper_funcs import all_pairs, diff, flatten, intersection, max_disj_set_upper_bound
