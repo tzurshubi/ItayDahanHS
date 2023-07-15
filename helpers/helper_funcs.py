@@ -545,3 +545,29 @@ def remove_blocks_rectangles_2(n, mat, og_mat):
         if not block_i:
             break
     return [[0 if (int(i/2)*2, int(j/2)*2) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]
+
+
+def get_3x3_coords(x,y):
+    return [(x-2,y-2),(x-1,y-2),(x,y-2),
+            (x-2,y-1),(x-1,y-1),(x,y-1),
+            (x-2,y),(x-1,y),(x,y)]
+
+
+# remove 3x3 blocks if on path
+def remove_blocks_for_new_spqr(n, mat):
+    block_i = flatten([[(i, j) for i in range(len(mat)) if mat[i][j] == 1] for j in range(len(mat[0]))])
+    bis = []
+    for i in range(n):
+        while True:
+            x,y = random.sample(block_i, 1)[0]
+            if x<3 or y<3:
+                continue
+            coords = get_3x3_coords(x,y)
+            num_blocks = sum([mat[x][y] for x,y in coords])
+            if num_blocks>7:
+                continue
+            bis += [coords]
+            block_i = [c for c in block_i if c not in coords]
+            if not block_i:
+                break
+    return [[0 if (i,j) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]
