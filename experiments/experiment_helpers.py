@@ -10,23 +10,29 @@ from helpers.graph_builder_funcs import parse_graph_png, crop_and_parse_graph
 from helpers.helper_funcs import draw_grid
 from heuristics.heauristics.other_heuristics import count_nodes_bcc_x, count_nodes_bcc_y, count_nodes_bcc
 from heuristics.heuristics_interface_calls import snake_y_all_neighbors, snake_rec_spqr, snake_only, spqr_recursive_h, \
-    ex_pairs_using_spqr
+    ex_pairs_using_spqr, ex_pairs_using_reg_flow, ex_pairs_using_lp, snake_only_prune, snake_y, snake_y_in_neighbors, \
+    ex_pairs_using_old_spqr
 
 heuristics = [
         # ["bcc x", count_nodes_bcc_x, False],
-        # ["bcc", count_nodes_bcc , False],
-        # ["bcc inc", count_nodes_bcc , True],
+        ["bcc", count_nodes_bcc , False],
+        ["bcc inc", count_nodes_bcc , True],
         # ["bcc y incremental", count_nodes_bcc_y, True],
-        # ["spqr", ex_pairs_using_spqr, True],
+    ["reg flow", ex_pairs_using_reg_flow, True],
+    ["LP", ex_pairs_using_lp, True],
+    #     ["spqr", ex_pairs_using_spqr, True],
     #     ["snake spqr", snake_only, True],
+    # ["snake spqr prune", snake_only_prune, True],
+    #
     #     ["snake spqr y", snake_y, True],
-    #     ["snake spqr y in neighbors", snake_y_in_neighbors, True],
-    #     ["snake spqr y all neighbors", snake_y_all_neighbors, True],
+        # ["snake spqr y in neighbors", snake_y_in_neighbors, True],
+    #     ["snake spqr all", snake_y_all_neighbors, True],
+    # ["snake spqr all prune", snake_y_all_neighbors, True],
         # ["snake spqr y recursive", snake_rec_spqr, True],
-    # ["old spqr", ex_pairs_using_spqr, True],
-    # ["new spqr", ex_pairs_using_spqr, True],
-    # ["spqr rec", spqr_recursive_h, True]
-    ['test', test_new_spqr, True]
+    ["old spqr", ex_pairs_using_old_spqr, True],
+    ["new spqr", ex_pairs_using_spqr, True],
+    ["spqr rec", spqr_recursive_h, True]
+
 
 ]
 def build_mazes():

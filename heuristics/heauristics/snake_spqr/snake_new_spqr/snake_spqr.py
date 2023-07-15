@@ -24,7 +24,6 @@ def snake_nodes_of_sn(current_sn, parent_sn, tree, g, s, t):
         if neighbor == parent_sn or (s not in intersection_sps and t not in intersection_sps and g.has_edge(intersection_sps[0], intersection_sps[1])):
             continue
         nodes += snake_nodes_of_sn(neighbor, current_sn, tree, g, s, t)
-    draw_grid("", g, )
     return nodes
 
 

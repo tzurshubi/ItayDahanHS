@@ -527,7 +527,7 @@ def remove_blocks(n, mat):
 
 def remove_blocks_2(n, mat, og_mat):
     block_i = flatten([[(i, j) for i in range(len(mat)) if mat[i][j] == 1 and og_mat[i][j] == 0] for j in range(len(mat[0]))])
-    print(len(block_i))
+    # print(len(block_i))
     bis = random.sample(block_i, n)
     return [[0 if (i,j) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]
 

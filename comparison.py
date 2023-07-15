@@ -1,20 +1,21 @@
 import os
 
-# from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
-# from algorithms.search_algorithms.dfbnb.run_dfbnb import run_dfbnb
-# from experiments.experiment import run_other, mother_of_tests
-# from experiments.tests.get_max_test import test_new_spqr
-# from helpers import index_to_node_stuff
-# from helpers.COMMON import *
-from helpers import index_to_node_stuff
-from helpers.graph_builder_funcs import generate_hard_grid, parse_graph_png, crop_and_parse_graph, graph_for_grid
-from helpers.helper_funcs import draw_grid
-# from heuristics.heuristics_interface_calls import spqr_recursive_h, ex_pairs_using_spqr
+from Definitions.state import State
+from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
+from algorithms.search_algorithms.dfbnb.run_dfbnb import run_dfbnb
+from experiments.experiment import run_other, mother_of_tests
+from experiments.tests.get_max_test import test_new_spqr
+from helpers import index_to_node_stuff, COMMON
+from helpers.COMMON import *
+from helpers.graph_builder_funcs import generate_hard_grid, parse_graph_png, crop_and_parse_graph, \
+    generate_aaai_showcase, generate_aaai_showcase_original
+from helpers.helper_funcs import draw_grid, flatten
+from heuristics.heuristics_interface_calls import spqr_recursive_h, ex_pairs_using_spqr, ex_pairs_using_old_spqr
 import time as t
 
 
 def run_mom_test():
-    mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=SNAKE_MODE, n=None)
+    mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=LSP_MODE, n=None)
 
 
 def compare_alt_to_astar():
@@ -41,62 +42,26 @@ def compare_alt_to_astar():
     draw_grid("astar", graph, grid, start, target, index_to_node, path=path_alt)
 
 
-# def recursive_vs_pairs():
-#     while True:
-#         grid, graph, start, target, index_to_node = generate_hard_grid(50, 50, 0.5, is_snake=False)
-#         index_to_node_stuff.index_to_node = index_to_node
-#         index_to_node_stuff.grid = grid
-#         ares = run_weighted(test_new_spqr, graph, start, target, 1, 50000, 2000, True, mode=LSP_MODE)
+def recursive_vs_pairs():
+    grid, graph, start, target, index_to_node = crop_and_parse_graph(
+        '/mnt/c/Users/itay/Desktop/notebooks/all_graphs/grids_20/graph_17.png', 20, 20)
+    index_to_node_stuff.index_to_node = index_to_node
+    index_to_node_stuff.grid = grid
+    ares = run_weighted(test_new_spqr, graph, start, target, 1, 50000, 2000, True, mode=LSP_MODE)
+
+
+def showcase_work():
+    _, grid, graph, start, target, index_to_node = generate_aaai_showcase_original()
+    state = State(start,[],graph.nodes)
+    old_val = ex_pairs_using_old_spqr(state, graph,target)
+    # draw_grid("old", graph, grid, start, target, index_to_node, path=flatten(COMMON.pairs_idk))
+    new_val = ex_pairs_using_spqr(state, graph,target)
+    # draw_grid("new", graph, grid, start, target, index_to_node, path=flatten(COMMON.pairs_idk))
+    print(old_val, new_val)
 
 
 
 if __name__ == '__main__':
-
-    X=1
-    S=0
-    T=0
-
-    grid = [
-        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
-        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
-        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
-        [X,X,X,X,X,0,0,0,0,0,0,0,0,0,X,X,X,X,X,X,X],
-        [0,0,0,0,0,T,0,0,0,0,0,0,0,S,0,0,0,0,0,0,0],
-        [0,X,X,X,X,0,0,0,0,0,0,0,0,0,X,X,X,X,X,X,0],
-        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
-        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
-        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
-        [0,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    ]
-
-    start = (13,5)
-    target = (4,5)
-    grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=X)
-    index_to_node_stuff.index_to_node = index_to_node
-    index_to_node_stuff.grid = grid
-    draw_grid("", graph, grid, start, target, index_to_node, path=[])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    run_mom_test()
+    # showcase_work()
 

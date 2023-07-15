@@ -8,8 +8,10 @@ from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
 from experiments.experiment_helpers import write_header_file, write_to_file, write_to_csv_file, save_heuristic_plot, \
     save_graph_picture, heuristics, convert_to_latex, create_graphs_from_folder
 from helpers.COMMON import SNAKE_MODE, LSP_MODE, GRIDS_MODE, MAZE_MODE, CUBE_MODE
-from helpers.graph_builder_funcs import generate_hard_grids, generate_hypercube
-from helpers.helper_funcs import diff, bcc_thingy, intersection
+from helpers.graph_builder_funcs import generate_hard_grids, generate_hypercube, generate_aaai_showcase, generate_grid, \
+    generate_rooms, build_heuristic_showcase, graph_for_grid, generate_aaai_showcase_2, generate_og_maze, \
+    generate_aaai_showcase_original
+from helpers.helper_funcs import diff, bcc_thingy, intersection, remove_blocks_2, remove_blocks
 from heuristics.heuristics_interface_calls import snake_y_all_neighbors
 
 CUTOFF = -1
@@ -49,14 +51,31 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
     #         mats += [mat]
 
     if world == GRIDS_MODE:
-        grid_n = 20
-        graphs = create_graphs_from_folder('/mnt/c/Users/itay/Desktop/notebooks/all_graphs/grids_20', grid_n, grid_n,
-                                           mode=mode)
+        graphs = [generate_aaai_showcase()]
+        #--------------------------------------------------------
+        # grid_n = 15
+        # graphs = create_graphs_from_folder('/mnt/c/Users/itay/Desktop/notebooks/all_graphs/grids_15', grid_n, grid_n,
+        #                                    mode=mode)
+        #---------------------------------------------
         # for bp in block_ps:
         #     for n, m in grid_sizes:
         #         graphs += [(bp,) + g for g in generate_hard_grids(runs_per_params, n, m, bp)]
     elif world == MAZE_MODE:
-        pass
+        if mode == LSP_MODE:
+            graphs = generate_rooms(mode=mode, k=10, n=10)
+            # # grid_n = len(mat)
+            # # og_mat = mat.copy()
+            # k=5
+            # # graphs = []
+            # graphs = [[name, mat, graph, start_node, target_node, index_to_node]]
+            # for i in range(5):
+            #     mat = remove_blocks(k, mat)
+            #     temp_graph = graph_for_grid(mat, index_to_node[start_node], index_to_node[target_node], mode=mode)
+            #     graphs.append((f'{name}_{i}', ) + temp_graph)
+
+        elif mode == SNAKE_MODE:
+            pass
+
     elif world == CUBE_MODE:
         graphs = [(0, 0, graph, start_node, target_node, 0)]
     i = 0
@@ -78,6 +97,7 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
         for graph_i, mat, graph, start, target, itn in graphs:
             print(f"GRAPH {graph_i}:")
             for name, h, incremental in heuristics:
+                print(f'running with {name} heuristic ')
                 path, expansions, runtime, hs, ls, ns, ng = algorithm(h,
                                                                       graph,
                                                                       start,
@@ -101,7 +121,9 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
                 ls_per_run[name][graph_i] = ls
                 expansions_per_run[name][graph_i] = expansions
                 if runtime > TIMEOUT:
-                    exp_flag = True
+                    write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, -9999, first_hs, len(path), ng)
+
+                    # exp_flag = True
                 #                 print(f"{name} {hs_per_run[name][graph_i]}")
                 # print(
                 #     f"\tNAME: {name}, \t\tPATH-LENGTH: {len(path)}, \t\tEXPANSIONS: {expansions} \t\tRUNTIME: {runtime}")
@@ -110,7 +132,7 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
                     #               ls, -1, w, -1)
                     write_to_csv_file(csv_file_name, n, name, expansions, runtime, last_hs, w, first_hs, ng)
                 else:
-                    write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, grid_n, first_hs, len(path), ng)
+                    write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, -9999, first_hs, len(path), ng)
             if world in (GRIDS_MODE, MAZE_MODE):
                 save_heuristic_plot(plot_dir, graph_i, hs_per_run)
                 save_graph_picture(graph_dir, graph_i, mat, graph, start, target, itn)
