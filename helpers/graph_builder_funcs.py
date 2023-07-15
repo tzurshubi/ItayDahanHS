@@ -12,7 +12,7 @@ import networkx as nx
 from experiments.tests.grid_cutter import find_largest_rectangle
 from helpers import index_to_node_stuff
 from helpers.COMMON import LSP_MODE, SNAKE_MODE
-from helpers.helper_funcs import flatten, draw_grid
+from helpers.helper_funcs import flatten, draw_grid, remove_blocks, remove_blocks_2, remove_blocks_rectangles_2
 from helpers.index_to_node_stuff import update_index_to_node
 
 
@@ -373,7 +373,7 @@ def parse_graph_png(path, rows, cols, mode=LSP_MODE, return_mat=False):
 
             v = tuple(data[r, c])
             mat_row += [v]
-            if (i,j) in [(0,1), (1,0)]:
+            if (i,j) in [(0,0), (12,12)]:
                 print(v)
             if v == (0, 255, 0, 0):
                 start = (j, i)
@@ -434,6 +434,45 @@ def generate_aaai_showcase():
         [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
         [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
         [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [x, x, x, x, x, x, x, x, 0, x, 0, x, x, x, x, x, x, x, x, x],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [x, x, x, x, x, x, x, x, 0, x, 0, x, x, x, x, x, x, x, x, x],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
+        [0, x, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, x, 0],
+        [0, x, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, x, 0],
+        [0, x, 0, 0, 0, x, x, x, x, x, x, x, x, x, x, 0, 0, 0, x, 0],
+        [0, x, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, x, 0],
+        [0, x, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, x, 0],
+        [0, 0, S, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, T, 0, 0],
+        [x, x, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, x, x],
+        [0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0],
+        [0, 0, 0, 0, 0, x, x, x, x, x, x, x, x, x, x, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
+    start = (18, 2)
+    target = (18, 17)
+    grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=LSP_MODE)
+    index_to_node_stuff.index_to_node = index_to_node
+    index_to_node_stuff.grid = grid
+    draw_grid("", graph, grid, start, target, index_to_node, path=[])
+    return 'showcase aaai', grid, graph, start, target, index_to_node
+
+def generate_aaai_showcase_2(mode=LSP_MODE):
+    x = 1
+    S = 0
+    T = 0
+
+    grid = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
+        [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
+        [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
+        [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
         [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
         [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
         [0, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, 0],
@@ -456,15 +495,14 @@ def generate_aaai_showcase():
     ]
     start = (18, 2)
     target = (18, 17)
-    grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=LSP_MODE)
-    index_to_node_stuff.index_to_node = index_to_node
-    index_to_node_stuff.grid = grid
+    grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=mode)
     draw_grid("", graph, grid, start, target, index_to_node, path=[])
     return 'showcase aaai', grid, graph, start, target, index_to_node
 
 
-def generate_room():
-    mati = [[0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+
+def generate_rooms(mode=LSP_MODE, k=10, n=10):
+    grid = [[0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
             [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -489,6 +527,7 @@ def generate_room():
             [1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+
     og_mat = [
         [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -516,4 +555,57 @@ def generate_room():
         [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ]
-    return mati, og_mat, (0,0) , (21,23)
+
+    start = (0, 0)
+    target = (21, 23)
+    # grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=mode)
+
+    # draw_grid("", graph, grid, start, target, index_to_node, path=[])
+    return generate_removed_blockes("room graph", grid, start, target, og_mat=og_mat, mode=mode, k=k)
+
+
+def generate_aaai_showcase_original():
+    X=1
+    S=0
+    T=0
+
+    grid = [
+        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
+        [0,0,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,X],
+        [X,X,X,X,X,0,0,0,0,0,0,0,0,0,X,X,X,X,X,X,X],
+        [0,0,0,0,0,T,0,0,0,0,0,0,0,S,0,0,0,0,0,0,0],
+        [0,X,X,X,X,0,0,0,0,0,0,0,0,0,X,X,X,X,X,X,0],
+        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,X,0,0,0,0,0,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    ]
+
+    start = (3,13)
+    target = (3,5)
+
+    grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=LSP_MODE)
+    # draw_grid("", graph, grid, start, target, index_to_node, path=[])
+    return 'showcase aaai', grid, graph, start, target, index_to_node
+
+
+def generate_og_maze(mode=LSP_MODE, k=5, n=5):
+    n = 13
+    filename = '/mnt/c/Users/itay/Desktop/notebooks/all_graphs/mazes/maze_og/og_maze.png'
+    mat, graph, start_node, target_node, itn = crop_and_parse_graph(filename, n, n, mode=mode)
+    return generate_removed_blockes("maze", mat, itn[start_node], itn[target_node], mode=mode, k=k, n=n)
+
+
+def generate_removed_blockes(name, grid, start, target, og_mat=None ,k=5, mode=LSP_MODE, n=5):
+    mat, graph, start_node, target_node, itn = graph_for_grid(grid, start, target, mode=mode)
+
+    graphs = [(name, mat, graph, start_node, target_node, itn)]
+    for i in range(1, n):
+        if mode == LSP_MODE:
+            mat = remove_blocks(k, mat) if og_mat is None else remove_blocks_2(k, mat, og_mat)
+        elif mode == SNAKE_MODE:
+            mat = remove_blocks_rectangles_2(k, mat, og_mat)
+        temp_graph = graph_for_grid(mat, itn[start_node], itn[target_node], mode=mode)
+        graphs.append((f'{name}_{i}',) + temp_graph)
+    return graphs

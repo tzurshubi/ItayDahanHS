@@ -4,6 +4,7 @@ from future.moves import itertools
 from sage.graphs.connectivity import spqr_tree
 from sage.graphs.graph import Graph
 
+from helpers import COMMON
 from helpers.helper_funcs import max_disj_set_upper_bound, flatten, diff, intersection
 
 
@@ -109,6 +110,7 @@ def get_max_nodes_spqr_old(component, in_node, out_node, x_filter=False, y_filte
     comp_sage = Graph(component)
     tree = spqr_tree(comp_sage)
     pairs = get_all_spqr_pairs_old(tree, component, in_node, out_node)
+    # COMMON.pairs_idk = pairs
     res = max_disj_set_upper_bound(component.nodes, pairs, x_filter, y_filter, component)
     # print('ret', res)
     return res

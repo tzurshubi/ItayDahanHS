@@ -3,6 +3,7 @@ from itertools import combinations
 from sage.graphs.connectivity import spqr_tree
 from sage.graphs.graph import Graph
 
+from helpers import COMMON
 from heuristics.heuristics_helper_funcs import get_relevant_cuts
 from helpers.helper_funcs import all_pairs, diff, flatten, intersection, max_disj_set_upper_bound
 
@@ -147,6 +148,7 @@ def get_max_nodes_spqr_new(component, in_node, out_node, x_filter=False, y_filte
 #         print(x)
 #     print('--------------------------------')
     pairs = get_all_spqr_pairs_new(tree, component, in_node, out_node)
+    # COMMON.pairs_idk = pairs
     if in_neighbors:
         pairs.update(get_neighbors_pairs(component, in_node))
     if out_neighbors:

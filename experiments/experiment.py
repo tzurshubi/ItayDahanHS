@@ -9,7 +9,8 @@ from experiments.experiment_helpers import write_header_file, write_to_file, wri
     save_graph_picture, heuristics, convert_to_latex, create_graphs_from_folder
 from helpers.COMMON import SNAKE_MODE, LSP_MODE, GRIDS_MODE, MAZE_MODE, CUBE_MODE
 from helpers.graph_builder_funcs import generate_hard_grids, generate_hypercube, generate_aaai_showcase, generate_grid, \
-    generate_room, build_heuristic_showcase, graph_for_grid
+    generate_rooms, build_heuristic_showcase, graph_for_grid, generate_aaai_showcase_2, generate_og_maze, \
+    generate_aaai_showcase_original
 from helpers.helper_funcs import diff, bcc_thingy, intersection, remove_blocks_2, remove_blocks
 from heuristics.heuristics_interface_calls import snake_y_all_neighbors
 
@@ -61,14 +62,17 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
         #         graphs += [(bp,) + g for g in generate_hard_grids(runs_per_params, n, m, bp)]
     elif world == MAZE_MODE:
         if mode == LSP_MODE:
-            mat, og_mat, start_node, target_node = generate_room()
-            # grid_n = len(mat)
-            k=5
-            graphs = []
-            for i in range(10):
-                mat = remove_blocks(k, mat)
-                graph = graph_for_grid(mat, start_node, target_node, mode=mode)
-                graphs.append((i, ) + graph)
+            graphs = generate_rooms(mode=mode, k=10, n=10)
+            # # grid_n = len(mat)
+            # # og_mat = mat.copy()
+            # k=5
+            # # graphs = []
+            # graphs = [[name, mat, graph, start_node, target_node, index_to_node]]
+            # for i in range(5):
+            #     mat = remove_blocks(k, mat)
+            #     temp_graph = graph_for_grid(mat, index_to_node[start_node], index_to_node[target_node], mode=mode)
+            #     graphs.append((f'{name}_{i}', ) + temp_graph)
+
         elif mode == SNAKE_MODE:
             pass
 
@@ -118,7 +122,7 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
                 expansions_per_run[name][graph_i] = expansions
                 if runtime > TIMEOUT:
                     write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, -9999, first_hs, len(path), ng)
-                    return
+
                     # exp_flag = True
                 #                 print(f"{name} {hs_per_run[name][graph_i]}")
                 # print(
