@@ -17,7 +17,7 @@ def function(state, heuristic, G, target):
     return heuristic(state, G, target)
 
 
-def calc_comps(state, G, target, algorithm, mode=LSP_MODE, prune=False):
+def calc_comps(state, G, target, algorithm, mode=LSP_MODE):
     _, _, relevant_comps, _, reach_nested, current_node = bcc_thingy(state, G, target)
     if relevant_comps == -1:
         return -1  # no path
@@ -31,7 +31,7 @@ def calc_comps(state, G, target, algorithm, mode=LSP_MODE, prune=False):
         intersection(relevant_comps[i + 1], relevant_comps[i]))[0]) for i in range(1, n - 1)] + [(list(
         intersection(relevant_comps[n - 2], relevant_comps[n - 1]))[0], target)]
 
-    if not prune:
+    if mode != LSP_MODE:
         subgraphs = [reach_nested.subgraph(comp) for comp in relevant_comps]
     else:
         subgraphs = [reach_nested.subgraph(snake_exclusion_set_spqr(reach_nested.subgraph(comp), in_node, out_node)) for comp, (in_node, out_node) in zip(relevant_comps, cut_nodes)]
@@ -75,7 +75,7 @@ def ex_pairs(state, G, target, algorithm, mode=LSP_MODE, prune=False):
     current_node = state.current
     if current_node == target:
         return 1
-    comp_hs = calc_comps(state, G, target, algorithm, mode, prune=prune)
+    comp_hs = calc_comps(state, G, target, algorithm, mode=mode)
     if isinstance(comp_hs, int) and comp_hs <= 0:
         return comp_hs
     relevant_nodes = 1 + sum([c.h - 1 for c in comp_hs])

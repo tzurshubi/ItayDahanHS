@@ -3,16 +3,17 @@ from datetime import datetime
 import os
 import csv
 from Definitions.state import State
+from algorithms.search_algorithms.actual_path.with_spqr.run_other import run_other
 from algorithms.search_algorithms.actual_path.with_spqr.with_spqr import get_comp_path
 from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
 from experiments.experiment_helpers import write_header_file, write_to_file, write_to_csv_file, save_heuristic_plot, \
-    save_graph_picture, heuristics, convert_to_latex, create_graphs_from_folder
+    save_graph_picture, convert_to_latex, create_graphs_from_folder, heuristics_lib, snake_heuristics_lib, \
+    other_heuristic_lib
 from helpers.COMMON import SNAKE_MODE, LSP_MODE, GRIDS_MODE, MAZE_MODE, CUBE_MODE
 from helpers.graph_builder_funcs import generate_hard_grids, generate_hypercube, generate_aaai_showcase, generate_grid, \
     generate_rooms, build_heuristic_showcase, graph_for_grid, generate_aaai_showcase_2, generate_og_maze, \
     generate_aaai_showcase_original
-from helpers.helper_funcs import diff, bcc_thingy, intersection, remove_blocks_2, remove_blocks
-from heuristics.heuristics_interface_calls import snake_y_all_neighbors
+from helpers.helper_funcs import diff, bcc_thingy, intersection, remove_blocks_2, remove_blocks, draw_grid
 
 CUTOFF = -1
 TIMEOUT = 15000
@@ -25,7 +26,7 @@ weights = [1]  # [0.7 + 0.1 * i for i in range(6)]
 
 
 
-def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE, n=None, mode=LSP_MODE, algorithm=run_weighted):
+def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE, n=None, algorithm=run_weighted):
     global best_path, best_path_len
     print(f'n: {n}')
     header = ['Graph', 'Grid Size', 'Heuristic', 'path', 'first_hs', 'Expansions', 'Runtime', 'Generated Nodes']
@@ -62,8 +63,13 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
         #         graphs += [(bp,) + g for g in generate_hard_grids(runs_per_params, n, m, bp)]
     elif world == MAZE_MODE:
         # if mode == LSP_MODE:
-        graphs = generate_rooms(mode=mode, k=4, n=10)
-            # # grid_n = len(mat)
+        graphs, snake_graphs = generate_rooms(k=1, n=1)
+        run_experiment(graphs, heuristics_lib, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name, world=world, mode=LSP_MODE, n=n, algorithm=algorithm)
+        run_experiment(snake_graphs, snake_heuristics_lib, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name, world=world, mode=SNAKE_MODE, n=n, algorithm=algorithm)
+        run_experiment(graphs, other_heuristic_lib, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name,
+                       world=world, mode=LSP_MODE, n=n, algorithm=run_other)
+
+        # # grid_n = len(mat)
             # # og_mat = mat.copy()
             # k=5
             # # graphs = []
@@ -78,6 +84,8 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
 
     elif world == CUBE_MODE:
         graphs = [(0, 0, graph, start_node, target_node, 0)]
+
+def run_experiment(graphs, heuristics, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name, world=GRIDS_MODE, mode=LSP_MODE, n=None, algorithm=run_weighted):
     i = 0
     runs = len(graphs)
     names = [name for name, h, _ in heuristics]
@@ -110,16 +118,20 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
                                                                       n=n,
                                                                       mode=mode
                                                                       )
-
                 print("path length: ", len(path) - 1, '\npath: ', path)
-                sum_path_lengths[name] += len(path) - 1
-                sum_expansions[name] += expansions
-                sum_runtimes[name] += runtime
-                hs_per_run[name][graph_i] = hs
-                first_hs = hs[0]
-                last_hs = hs[len(hs) - 1]
-                ls_per_run[name][graph_i] = ls
-                expansions_per_run[name][graph_i] = expansions
+                draw_grid(name, graph, mat, start, target, itn, path=path)
+                if algorithm != run_other:
+                    print("path length: ", len(path) - 1, '\npath: ', path)
+                    sum_path_lengths[name] += len(path) - 1
+                    sum_expansions[name] += expansions
+                    sum_runtimes[name] += runtime
+                    hs_per_run[name][graph_i] = hs
+                    first_hs = hs[0]
+                    last_hs = hs[len(hs) - 1]
+                    ls_per_run[name][graph_i] = ls
+                    expansions_per_run[name][graph_i] = expansions
+                else:
+                    first_hs = -999
                 if runtime > TIMEOUT:
                     write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, -9999, first_hs, len(path), ng)
 
@@ -133,33 +145,17 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
                     write_to_csv_file(csv_file_name, n, name, expansions, runtime, last_hs, w, first_hs, ng)
                 else:
                     write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, -9999, first_hs, len(path), ng)
-            if world in (GRIDS_MODE, MAZE_MODE):
-                save_heuristic_plot(plot_dir, graph_i, hs_per_run)
+            if world in (GRIDS_MODE, MAZE_MODE) and algorithm != run_other:
+                save_heuristic_plot(heuristics, plot_dir, graph_i, hs_per_run)
                 save_graph_picture(graph_dir, graph_i, mat, graph, start, target, itn)
 
         convert_to_latex(csv_file_name, latex_file_name)
+
+
 #
-def run_other(graph, start, target):
-    start_available = tuple(diff(list(graph.nodes), {start}))
-    start_path = (start,)
-#     bcc_dict = {}
-    state = State(start, start_path, start_available)
-    _, _, relevant_comps, _, reach_nested, current_node = bcc_thingy(state, graph, target)
-    if relevant_comps == -1:
-        return -1  # no path
-    n = len(relevant_comps)
-    if n == 0:
-        return 0
-    cut_nodes = [(current_node, target)] if n == 1 else [(current_node, list(intersection(relevant_comps[0], relevant_comps[1]))[0])] + [(list(intersection(relevant_comps[i-1], relevant_comps[i]))[0], list(intersection(relevant_comps[i+1], relevant_comps[i]))[0]) for i in range(1,n-1)] + [(list(intersection(relevant_comps[n-2], relevant_comps[n-1]))[0], target)]
-    subgraphs = [reach_nested.subgraph(comp) for comp in relevant_comps]
-    paths = [get_comp_path(comp, in_node, out_node) for (in_node, out_node), comp in zip(cut_nodes, subgraphs)]
-    path = [start]
-    # for (in_node, out_node),comp in zip(cut_nodes, relevant_comps):
-    #     print((in_node, out_node),comp)
-    for p in paths:
-        # draw_grid('', 'p', g1, [[0]*20]*20, source, target, itn, path= p)
-        path += list(p)
-    return tuple(set(path))
+
+
+
 
 
 def mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=LSP_MODE, n=None):
@@ -171,6 +167,6 @@ def mother_of_tests(algorithm=run_weighted, world=GRIDS_MODE, mode=LSP_MODE, n=N
         cube, node_to_index = generate_hypercube(n)
         target = tuple([0] * n)
         start = tuple([0] * (n - 2) + [1, 1])
-        search_experiment(cube, start, target, world=CUBE_MODE, n=n, mode=mode, algorithm=algorithm)
+        search_experiment(cube, start, target, world=CUBE_MODE, n=n, algorithm=algorithm)
     else:
-        search_experiment(world=world, mode=mode, algorithm=algorithm)
+        search_experiment(world=world, algorithm=algorithm)

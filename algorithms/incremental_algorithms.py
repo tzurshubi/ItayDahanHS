@@ -6,7 +6,7 @@ from helpers.COMMON import LSP_MODE
 from helpers.helper_funcs import intersection
 
 # get sum of nodes from each comp, dont know why its named like that
-def ex_pairs_incremental(state, G, target, algorithm, mode=LSP_MODE, prune=False):
+def ex_pairs_incremental(state, G, target, algorithm, mode=LSP_MODE):
     # print('hi')
     current_node = state.current
     if current_node == target:
@@ -27,7 +27,7 @@ def ex_pairs_incremental(state, G, target, algorithm, mode=LSP_MODE, prune=False
             pseudo_target = bccs[0].out_node
             pseudo_G = G.subgraph(first_comp_nodes)
             # print('start 2')
-            extra_comps = calc_comps(pseudo_state, pseudo_G, pseudo_target, algorithm, mode, prune=prune)
+            extra_comps = calc_comps(pseudo_state, pseudo_G, pseudo_target, algorithm, mode)
             # print('end 1')
             # state.print()
             # state.print_bccs()
