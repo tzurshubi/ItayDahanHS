@@ -545,3 +545,41 @@ def remove_blocks_rectangles_2(n, mat, og_mat):
         if not block_i:
             break
     return [[0 if (int(i/2)*2, int(j/2)*2) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]
+
+def get_3x3_coords(x,y,len_x, len_y):
+    coords = [(x,y)]
+    ys = [y]
+    if y>0:
+        ys += [y-1]
+    if y<len_y-1:
+        ys +=[y+1]
+
+    xs = [x]
+    if x>0:
+        xs += [x-1]
+    if x<len_x-1:
+        xs +=[x+1]
+
+    coords = flatten([[(xx,yy) for xx in xs] for yy in ys])
+
+    return coords
+
+
+def remove_blocks_for_new_spqr(n, mat):
+    free_i = flatten([[(i, j) for i in range(len(mat)) if mat[i][j] == 0] for j in range(len(mat[0]))])
+    bis = []
+    len_x = len(mat)
+    len_y = len(mat[0])
+    for i in range(n):
+        while True:
+            x,y = random.sample(free_i, 1)[0]
+            coords = get_3x3_coords(x,y,len_x,len_y)
+            num_blocks = sum([mat[x][y] for x,y in coords])
+            if num_blocks<3:
+                continue
+            bis += coords
+            free_i = [c for c in free_i if c not in coords]
+            break
+        if not free_i:
+            break
+    return [[0 if (i,j) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]

@@ -61,8 +61,8 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
         #     for n, m in grid_sizes:
         #         graphs += [(bp,) + g for g in generate_hard_grids(runs_per_params, n, m, bp)]
     elif world == MAZE_MODE:
-        if mode == LSP_MODE:
-            graphs = generate_rooms(mode=mode, k=10, n=10)
+        # if mode == LSP_MODE:
+        graphs = generate_rooms(mode=mode, k=4, n=10)
             # # grid_n = len(mat)
             # # og_mat = mat.copy()
             # k=5
@@ -73,8 +73,8 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
             #     temp_graph = graph_for_grid(mat, index_to_node[start_node], index_to_node[target_node], mode=mode)
             #     graphs.append((f'{name}_{i}', ) + temp_graph)
 
-        elif mode == SNAKE_MODE:
-            pass
+        # elif mode == SNAKE_MODE:
+        #     pass
 
     elif world == CUBE_MODE:
         graphs = [(0, 0, graph, start_node, target_node, 0)]

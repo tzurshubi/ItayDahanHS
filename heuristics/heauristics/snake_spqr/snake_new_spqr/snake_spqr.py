@@ -4,6 +4,7 @@ import sage.all
 from sage.graphs.connectivity import spqr_tree
 from sage.graphs.graph import Graph
 
+from helpers import index_to_node_stuff
 from helpers.helper_funcs import flatten, intersection, max_disj_set_upper_bound, draw_grid
 from heuristics.heauristics.naive_spqr.naive_spqr import get_neighbors_pairs, \
     get_all_spqr_pairs_new
@@ -47,9 +48,7 @@ def snake_exclusion_pairs_spqr(comp, in_node, out_node, x_filter=False, y_filter
     # pairs = get_all_spqr_pairs(tree, comp, in_node, out_node)
     # res = max_disj_set_upper_bound(comp.nodes, pairs)
     # print(res)
-    nodes = snake_exclusion_set_spqr(comp, in_node, out_node)
-    comp_reduced = comp.subgraph(nodes)
-    res = get_max_nodes_spqr_snake(comp_reduced, in_node, out_node, x_filter, y_filter, in_neighbors, out_neighbors)
+    res = get_max_nodes_spqr_snake(comp, in_node, out_node, x_filter, y_filter, in_neighbors, out_neighbors)
     return res
 
 
