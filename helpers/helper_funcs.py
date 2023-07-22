@@ -214,7 +214,7 @@ def get_clique_bf(node, graph):
                 return subset
 
 
-def max_disj_set_upper_bound(nodes, pairs, x_filter=False, y_filter=False, og_g=None):
+def max_disj_set_upper_bound(nodes, pairs, x_filter=False, y_filter=False, rectangle_filter=False, og_g=None):
     g = nx.Graph()
     for x in nodes:
         g.add_node(x)
@@ -257,6 +257,16 @@ def max_disj_set_upper_bound(nodes, pairs, x_filter=False, y_filter=False, og_g=
                     g.remove_node(n)
                     og_g.remove_node(n)
                 counter += 4
+        if rectangle_filter:
+            while og_g.nodes:
+                x = max(og_g.nodes, key=lambda x: og_g.degree[x])
+                if og_g.degree[x] < 2:
+                    break
+                for n in [x] + list(og_g.neighbors(x)):
+                    g.remove_node(n)
+                    og_g.remove_node(n)
+                counter += 4
+
     counter += len(g.nodes)
     # print('counter', counter)
     # print('----------------------------------')

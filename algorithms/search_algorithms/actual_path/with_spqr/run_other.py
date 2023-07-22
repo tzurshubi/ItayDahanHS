@@ -35,12 +35,15 @@ def run_other(heuristic, graph, start, target, weight, cutoff, timeout, is_incre
         intersection(relevant_comps[n - 2], relevant_comps[n - 1]))[0], target)]
     subgraphs = [reach_nested.subgraph(comp) for comp in relevant_comps]
     paths = [get_comp_path(comp, in_node, out_node, mode=mode) for (in_node, out_node), comp in zip(cut_nodes, subgraphs)]
-    path = [start]
+    path = []
     # for (in_node, out_node),comp in zip(cut_nodes, relevant_comps):
     #     print((in_node, out_node),comp)
     for p in paths:
         # draw_grid('', 'p', g1, [[0]*20]*20, source, target, itn, path= p)
-        path += list(p)
+        path += list(p)[:-1]
+
+    path+=[target]
+
     runtime = t.time() - start_time
     return path, -9, runtime, -9, -9, -9, -9
     # expansions, runtime, nodes_extracted_heuristic_values, nodes_extracted_path_len, nodes_chosen, generated_nodes = data
