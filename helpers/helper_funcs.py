@@ -2,8 +2,8 @@
 import itertools
 import random
 
-# import networkx as nx
-# from matplotlib import pyplot as plt
+import networkx as nx
+from matplotlib import pyplot as plt
 import numpy as np
 from Definitions.state import State
 import pickle
@@ -546,28 +546,40 @@ def remove_blocks_rectangles_2(n, mat, og_mat):
             break
     return [[0 if (int(i/2)*2, int(j/2)*2) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]
 
+def get_3x3_coords(x,y,len_x, len_y):
+    coords = [(x,y)]
+    ys = [y]
+    if y>0:
+        ys += [y-1]
+    if y<len_y-1:
+        ys +=[y+1]
 
-def get_3x3_coords(x,y):
-    return [(x-2,y-2),(x-1,y-2),(x,y-2),
-            (x-2,y-1),(x-1,y-1),(x,y-1),
-            (x-2,y),(x-1,y),(x,y)]
+    xs = [x]
+    if x>0:
+        xs += [x-1]
+    if x<len_x-1:
+        xs +=[x+1]
+
+    coords = flatten([[(xx,yy) for xx in xs] for yy in ys])
+
+    return coords
 
 
-# remove 3x3 blocks if on path
 def remove_blocks_for_new_spqr(n, mat):
-    block_i = flatten([[(i, j) for i in range(len(mat)) if mat[i][j] == 1] for j in range(len(mat[0]))])
+    free_i = flatten([[(i, j) for i in range(len(mat)) if mat[i][j] == 0] for j in range(len(mat[0]))])
     bis = []
+    len_x = len(mat)
+    len_y = len(mat[0])
     for i in range(n):
         while True:
-            x,y = random.sample(block_i, 1)[0]
-            if x<3 or y<3:
-                continue
-            coords = get_3x3_coords(x,y)
+            x,y = random.sample(free_i, 1)[0]
+            coords = get_3x3_coords(x,y,len_x,len_y)
             num_blocks = sum([mat[x][y] for x,y in coords])
-            if num_blocks>7:
+            if num_blocks<3:
                 continue
-            bis += [coords]
-            block_i = [c for c in block_i if c not in coords]
-            if not block_i:
-                break
+            bis += coords
+            free_i = [c for c in free_i if c not in coords]
+            break
+        if not free_i:
+            break
     return [[0 if (i,j) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]

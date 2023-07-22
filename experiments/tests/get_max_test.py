@@ -5,8 +5,7 @@ from helpers.helper_funcs import max_disj_set_upper_bound
 from helpers.index_to_node_stuff import index_to_node
 from heuristics.heauristics.naive_spqr.naive_spqr import get_max_nodes_spqr_new
 from heuristics.heauristics.recursive_spqr.recursive_spqr import get_max_nodes_spqr_recursive
-from heuristics.heauristics.snake_spqr.snake_new_spqr.snake_spqr import snake_exclusion_pairs_spqr, \
-    get_max_nodes_spqr_snake
+from heuristics.heauristics.snake_spqr.snake_new_spqr.snake_spqr import get_max_nodes_spqr_snake
 
 pair_i = 0
 good_bcc = 0

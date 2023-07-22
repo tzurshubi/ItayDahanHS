@@ -12,7 +12,8 @@ import networkx as nx
 from experiments.tests.grid_cutter import find_largest_rectangle
 from helpers import index_to_node_stuff
 from helpers.COMMON import LSP_MODE, SNAKE_MODE
-from helpers.helper_funcs import flatten, draw_grid, remove_blocks, remove_blocks_2, remove_blocks_rectangles_2
+from helpers.helper_funcs import flatten, draw_grid, remove_blocks, remove_blocks_2, remove_blocks_rectangles_2, \
+    remove_blocks_for_new_spqr
 from helpers.index_to_node_stuff import update_index_to_node
 
 
@@ -561,7 +562,7 @@ def generate_rooms(mode=LSP_MODE, k=10, n=10):
     # grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=mode)
 
     # draw_grid("", graph, grid, start, target, index_to_node, path=[])
-    return generate_removed_blockes("room graph", grid, start, target, og_mat=og_mat, mode=mode, k=k)
+    return generate_removed_blockes("room graph", grid, start, target, og_mat=og_mat, mode=mode, k=k, n=n)
 
 
 def generate_aaai_showcase_original():
@@ -591,9 +592,10 @@ def generate_aaai_showcase_original():
 
 
 def generate_og_maze(mode=LSP_MODE, k=5, n=5):
-    n = 13
+    grid_n = 13
     filename = '/mnt/c/Users/itay/Desktop/notebooks/all_graphs/mazes/maze_og/og_maze.png'
-    mat, graph, start_node, target_node, itn = crop_and_parse_graph(filename, n, n, mode=mode)
+    mat, graph, start_node, target_node, itn = crop_and_parse_graph(filename, grid_n, grid_n, mode=mode)
+
     return generate_removed_blockes("maze", mat, itn[start_node], itn[target_node], mode=mode, k=k, n=n)
 
 
@@ -603,9 +605,20 @@ def generate_removed_blockes(name, grid, start, target, og_mat=None ,k=5, mode=L
     graphs = [(name, mat, graph, start_node, target_node, itn)]
     for i in range(1, n):
         if mode == LSP_MODE:
-            mat = remove_blocks(k, mat) if og_mat is None else remove_blocks_2(k, mat, og_mat)
+            mat = remove_blocks_for_new_spqr(k, mat)# if og_mat is None else remove_blocks_2(k, mat, og_mat)
         elif mode == SNAKE_MODE:
             mat = remove_blocks_rectangles_2(k, mat, og_mat)
         temp_graph = graph_for_grid(mat, itn[start_node], itn[target_node], mode=mode)
         graphs.append((f'{name}_{i}',) + temp_graph)
+        # mat2, graph2, start_node2, target_node2, itn2 = temp_graph
+        # draw_grid("", graph2, mat2, start_node2, target_node2, itn2)
     return graphs
+
+if __name__ == '__main__':
+    filename = '/mnt/c/Users/itay/Desktop/notebooks/all_graphs/mazes/maze_og/og_maze.png'
+    mat, graph, start_node, target_node, itn = crop_and_parse_graph(filename, 13, 13, mode=LSP_MODE)
+    draw_grid('old', graph, mat, start_node, target_node, itn)
+
+    mat2 = remove_blocks_for_new_spqr(4, mat)
+    _, graph2, start_node2, target_node2, itn2 = graph_for_grid(mat2, itn[start_node], itn[target_node])
+    draw_grid('res', graph2, mat2, start_node2, target_node2, itn2)

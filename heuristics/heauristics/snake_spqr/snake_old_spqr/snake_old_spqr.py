@@ -1,3 +1,4 @@
+import networkx as nx
 from sage.graphs.connectivity import spqr_tree
 from sage.graphs.graph import Graph
 
@@ -12,14 +13,14 @@ def get_path(s,t, tree):
     return nx.shortest_path(tree, start, target)
 
 
-def snake_nodes_of_sn(current_sn, parent_sn, tree, g, s, t):
+def snake_nodes_of_sn_old(current_sn, parent_sn, tree, g, s, t):
     nodes = list(current_sn[1].networkx_graph().nodes)
     current_sps = nodes.copy()
     for neighbor in tree.neighbors(current_sn):
         intersection_sps = intersection(neighbor[1].networkx_graph().nodes, current_sps)
         if neighbor == parent_sn or (s not in intersection_sps and t not in intersection_sps and g.has_edge(intersection_sps[0], intersection_sps[1])):
             continue
-        nodes += snake_nodes_of_sn(neighbor, current_sn, tree, g, s, t)
+        nodes += snake_nodes_of_sn_old(neighbor, current_sn, tree, g, s, t)
     return nodes
 
 
@@ -35,7 +36,7 @@ def prune_t(current_sn, parent_sn, tree, g, s, t):
             prune_t(neighbor, current_sn, tree, g, s, t)
 
 
-def snake_exclusion_pairs_spqr(comp, in_node, out_node, x_filter=False, y_filter=False):
+def snake_exclusion_pairs_spqr_old(comp, in_node, out_node, x_filter=False, y_filter=False):
     # comp_sage = Graph(comp)
     # tree = spqr_tree(comp_sage)
     # path = get_path(in_node, out_node, tree)
@@ -72,7 +73,7 @@ def snake_exclusion_set_spqr(comp, in_node, out_node):
     tree = spqr_tree(comp_sage)
     path = get_path(in_node, out_node, tree)
     path_nodes = set(flatten([x[1].vertices() for x in path]))
-    side_nodes = set(flatten([flatten([snake_nodes_of_sn(x, p, tree, comp, in_node, out_node) for x in tree.neighbors(p) if x not in path]) for p in path]))
+    side_nodes = set(flatten([flatten([snake_nodes_of_sn_old(x, p, tree, comp, in_node, out_node) for x in tree.neighbors(p) if x not in path]) for p in path]))
     nodes = path_nodes.union(side_nodes)
     return nodes
 
