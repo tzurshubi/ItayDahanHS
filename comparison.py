@@ -16,7 +16,11 @@ import time as t
 
 
 def run_mom_test():
-    mother_of_tests(algorithm=run_weighted, world=CUBE_MODE, mode=SNAKE_MODE, n=6)
+    #choose hypercube or mazes
+
+    # mother_of_tests(algorithm=run_weighted, world=CUBE_MODE, mode=SNAKE_MODE, n=6)
+    mother_of_tests(algorithm=run_weighted, world=MAZE_MODE, mode=None, n=None)
+
 
 
 def compare_alt_to_astar():

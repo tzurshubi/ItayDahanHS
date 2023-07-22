@@ -45,14 +45,7 @@ snake_heuristics_lib = [
     #
         ["snake y prune old", snake_y_old, True],
     ["snake y prune new", snake_y, True],
-
-    # ["snake spqr y in neighbors", snake_y_in_neighbors, True],
-    #     ["snake spqr all", snake_y_all_neighbors, True],
-    # ["snake spqr all prune", snake_y_all_neighbors, True],
-        # ["snake spqr y recursive", snake_rec_spqr, True],
-    # ["old spqr", ex_pairs_using_old_spqr, True],
-    # ["new spqr", ex_pairs_using_spqr, True],
-    # ["spqr rec", spqr_recursive_h, True]
+    ["snake spqr rec", snake_rec_spqr, True]
 ]
 def build_mazes():
     pass

@@ -63,25 +63,14 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
         #     for n, m in grid_sizes:
         #         graphs += [(bp,) + g for g in generate_hard_grids(runs_per_params, n, m, bp)]
     elif world == MAZE_MODE:
-        # if mode == LSP_MODE:
-        graphs, snake_graphs = generate_rooms(k=1, n=1)
+        #You can change generate_rooms to generate_og_maze
+        graphs, snake_graphs = generate_rooms(k=1, n=6)
         run_experiment(graphs, heuristics_lib, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name, world=world, mode=LSP_MODE, n=n, algorithm=algorithm)
         run_experiment(snake_graphs, snake_heuristics_lib, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name, world=world, mode=SNAKE_MODE, n=n, algorithm=algorithm)
         run_experiment(graphs, other_heuristic_lib, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name,
                        world=world, mode=LSP_MODE, n=n, algorithm=run_other)
 
-        # # grid_n = len(mat)
-            # # og_mat = mat.copy()
-            # k=5
-            # # graphs = []
-            # graphs = [[name, mat, graph, start_node, target_node, index_to_node]]
-            # for i in range(5):
-            #     mat = remove_blocks(k, mat)
-            #     temp_graph = graph_for_grid(mat, index_to_node[start_node], index_to_node[target_node], mode=mode)
-            #     graphs.append((f'{name}_{i}', ) + temp_graph)
 
-        # elif mode == SNAKE_MODE:
-        #     pass
 
     elif world == CUBE_MODE:
         graphs = [(0, 0, graph, start_node, target_node, 0)]
