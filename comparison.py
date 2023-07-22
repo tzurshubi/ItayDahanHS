@@ -1,16 +1,17 @@
 import os
 
-from Definitions.state import State
-from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
-from algorithms.search_algorithms.dfbnb.run_dfbnb import run_dfbnb
-from experiments.experiment import run_other, mother_of_tests
-from experiments.tests.get_max_test import test_new_spqr
-from helpers import index_to_node_stuff, COMMON
-from helpers.COMMON import *
-from helpers.graph_builder_funcs import generate_hard_grid, parse_graph_png, crop_and_parse_graph, \
-    generate_aaai_showcase, generate_aaai_showcase_original
+# from Definitions.state import State
+# from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
+# from algorithms.search_algorithms.dfbnb.run_dfbnb import run_dfbnb
+# from experiments.experiment import run_other, mother_of_tests
+# from experiments.tests.get_max_test import test_new_spqr
+# from helpers import index_to_node_stuff, COMMON
+# from helpers.COMMON import *
+# from helpers.graph_builder_funcs import generate_hard_grid, parse_graph_png, crop_and_parse_graph, \
+#     generate_aaai_showcase, generate_aaai_showcase_original
+from helpers.graph_builder_funcs import crop_and_parse_graph
 from helpers.helper_funcs import draw_grid, flatten
-from heuristics.heuristics_interface_calls import spqr_recursive_h, ex_pairs_using_spqr, ex_pairs_using_old_spqr
+# from heuristics.heuristics_interface_calls import spqr_recursive_h, ex_pairs_using_spqr, ex_pairs_using_old_spqr
 import time as t
 
 
@@ -60,8 +61,12 @@ def showcase_work():
     print(old_val, new_val)
 
 
+def test_remove_blocks():
+    grid, graph, start, target, index_to_node = crop_and_parse_graph('C:/Users/X/Downloads/graph_og_maze.png', 13,13)
+    draw_grid('og', graph, grid, start, target, index_to_node)
+
 
 if __name__ == '__main__':
-    run_mom_test()
-    # showcase_work()
+    # test_remove_blocks()
+    showcase_work()
 

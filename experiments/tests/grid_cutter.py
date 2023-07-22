@@ -1,4 +1,4 @@
-# import cv2
+import cv2
 # import numpy as np
 #
 # def find_largest_rectangle(image_path):
@@ -27,7 +27,7 @@
 #     cropped_image = img[y:y+h, x:x+w]
 #
 #     return cropped_image
-import cv2
+# import cv2
 import numpy as np
 
 def find_largest_rectangle(image_path):
