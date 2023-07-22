@@ -1,9 +1,14 @@
+# snake spqr pairs
 import networkx as nx
+import sage.all
 from sage.graphs.connectivity import spqr_tree
 from sage.graphs.graph import Graph
 
-from helpers.helper_funcs import flatten, intersection
-from heuristics.heauristics.snake_spqr.snake_new_spqr.snake_spqr import get_path
+from helpers import index_to_node_stuff
+from helpers.helper_funcs import flatten, intersection, max_disj_set_upper_bound, draw_grid
+from heuristics.heauristics.naive_spqr.naive_spqr import get_neighbors_pairs, \
+    get_all_spqr_pairs_new
+
 
 def get_path(s,t, tree):
     tree = tree.networkx_graph()
