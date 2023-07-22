@@ -2,6 +2,7 @@
 import os
 import random
 import shutil
+from copy import deepcopy
 
 import cv2
 import matplotlib.pyplot as plt
@@ -354,6 +355,38 @@ def graph_for_grid(grid, start, target, mode=LSP_MODE):
     return grid, graph, start, target, index_to_node
 
 
+def create_lsp_and_snake(grid, start, target):
+    height = len(grid)
+    width = len(grid[0])
+    graph = nx.Graph()
+    index_to_node = {}
+    node_index = 0
+    node_to_index = {}
+    # set up edges
+    for i in range(height):
+        for j in range(width):
+            if grid[i][j]:
+                continue
+            graph.add_node(node_index)
+            node_to_index[(i, j)] = node_index
+            index_to_node[node_index] = (i, j)
+            if i > 0 and not grid[i - 1][j]:
+                graph.add_edge(node_index, node_to_index[(i - 1, j)])
+            if j > 0 and not grid[i][j - 1]:
+                graph.add_edge(node_index, node_to_index[(i, j - 1)])
+            node_index += 1
+    start, target = node_to_index[start], node_to_index[target]
+    try:
+        nx.shortest_path(graph, source=start, target=target)
+    except Exception:
+        raise Exception('no path between start to target')
+    snake_graph = deepcopy(graph)
+    for node in graph.nodes:
+        graph.nodes[node]["constraint_nodes"] = [node]
+    for node in snake_graph.nodes:
+        snake_graph.nodes[node]["constraint_nodes"] = list(graph.neighbors(node))
+    return grid, graph, start, target, index_to_node, snake_graph
+
 def parse_graph_png(path, rows, cols, mode=LSP_MODE, return_mat=False):
     p = (255, 0, 255, 0)
     start = ()
@@ -502,7 +535,7 @@ def generate_aaai_showcase_2(mode=LSP_MODE):
 
 
 
-def generate_rooms(mode=LSP_MODE, k=10, n=10):
+def generate_rooms(k=10, n=10):
     grid = [[0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
@@ -562,7 +595,7 @@ def generate_rooms(mode=LSP_MODE, k=10, n=10):
     # grid, graph, start, target, index_to_node = graph_for_grid(grid, start, target, mode=mode)
 
     # draw_grid("", graph, grid, start, target, index_to_node, path=[])
-    return generate_removed_blockes("room graph", grid, start, target, og_mat=og_mat, mode=mode, k=k, n=n)
+    return generate_removed_blockes("room graph", grid, start, target, og_mat=og_mat, k=k, n=n)
 
 
 def generate_aaai_showcase_original():
@@ -600,19 +633,21 @@ def generate_og_maze(mode=LSP_MODE, k=5, n=5):
 
 
 def generate_removed_blockes(name, grid, start, target, og_mat=None ,k=5, mode=LSP_MODE, n=5):
-    mat, graph, start_node, target_node, itn = graph_for_grid(grid, start, target, mode=mode)
+    mat, graph, start_node, target_node, itn, snake_graph = create_lsp_and_snake(grid, start, target)
 
     graphs = [(name, mat, graph, start_node, target_node, itn)]
+    snake_graphs = [(name, mat, snake_graph, start_node, target_node, itn)]
     for i in range(1, n):
         if mode == LSP_MODE:
             mat = remove_blocks_for_new_spqr(k, mat)# if og_mat is None else remove_blocks_2(k, mat, og_mat)
         elif mode == SNAKE_MODE:
             mat = remove_blocks_rectangles_2(k, mat, og_mat)
-        temp_graph = graph_for_grid(mat, itn[start_node], itn[target_node], mode=mode)
-        graphs.append((f'{name}_{i}',) + temp_graph)
+        temp_mat, temp_graph, temp_start_node, temp_target_node, temp_itn, temp_snake_graph = create_lsp_and_snake(mat, itn[start_node], itn[target_node])
+        graphs.append((f'{name}_{i}',) + (temp_mat, temp_graph, temp_start_node, temp_target_node, temp_itn))
+        snake_graphs.append((f'{name}_{i}',) + (temp_mat, temp_snake_graph, temp_start_node, temp_target_node, temp_itn))
         # mat2, graph2, start_node2, target_node2, itn2 = temp_graph
         # draw_grid("", graph2, mat2, start_node2, target_node2, itn2)
-    return graphs
+    return graphs, snake_graphs
 
 if __name__ == '__main__':
     filename = '/mnt/c/Users/itay/Desktop/notebooks/all_graphs/mazes/maze_og/og_maze.png'

@@ -11,7 +11,7 @@ from helpers.graph_builder_funcs import generate_hard_grid, parse_graph_png, cro
     generate_aaai_showcase, generate_aaai_showcase_original
 from helpers.helper_funcs import draw_grid, flatten
 from heuristics.heuristics_interface_calls import spqr_recursive_h, ex_pairs_using_spqr, ex_pairs_using_old_spqr, \
-    snake_only_prune, snake_only
+    snake_only_prune
 import time as t
 
 

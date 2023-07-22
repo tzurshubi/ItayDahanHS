@@ -5,6 +5,7 @@ from sage.graphs.connectivity import spqr_tree
 from sage.graphs.graph import Graph
 
 from helpers import index_to_node_stuff
+from helpers.COMMON import LSP_MODE
 from heuristics.heuristics_helper_funcs import edge_seperators, find_root_sn
 from heuristics.heuristics_interface_calls import spqr_recursive_h
 from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
@@ -24,17 +25,17 @@ def get_sub_search_graph(s, t, sub_g, edge_to_nodes):
     return sub_g
 
 
-def spqr_nodes_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict):
+def spqr_nodes_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict, mode):
     if current_sn[0] == 'R':
-        return nodes_r_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict)
+        return nodes_r_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict, mode)
     if current_sn[0] == 'P':
-        return nodes_p_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict)
+        return nodes_p_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict, mode)
     if current_sn[0] == 'S':
-        return nodes_s_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict)
+        return nodes_s_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict, mode)
     return []
 
 
-def nodes_r_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict):
+def nodes_r_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict, mode):
     # print('hi')
     sn_sp = [(neighbor_sn, sp_dict[(neighbor_sn, current_sn)]) for neighbor_sn in
              tree.networkx_graph().neighbors(current_sn) if neighbor_sn != parent_sn]
@@ -52,15 +53,15 @@ def nodes_r_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_di
 
     graph = get_sub_search_graph(in_node, out_node, local_g, super_n_nodes_dict)
     # draw_grid("", graph, index_to_node_stuff.grid, in_node, out_node, index_to_node_stuff.index_to_node, path=[])
-    path = run_weighted(spqr_recursive_h, graph, in_node, out_node, 1, 50000, 2000, True, mode="not snake")[0]
+    path = run_weighted(spqr_recursive_h, graph, in_node, out_node, 1, 50000, 2000, True, mode=mode)[0]
     path = path if not parent_sn else diff(path, [in_node, out_node])
     return path
 
 
-def nodes_s_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict):
+def nodes_s_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict, mode):
     sn_sp = [(neighbor_sn, sp_dict[(neighbor_sn, current_sn)]) for neighbor_sn in
              tree.networkx_graph().neighbors(current_sn) if neighbor_sn != parent_sn]
-    super_n_nodes = [((i, o), spqr_nodes_actual_path(neighbor_sn, current_sn, tree, g, i, o, sp_dict)) for
+    super_n_nodes = [((i, o), spqr_nodes_actual_path(neighbor_sn, current_sn, tree, g, i, o, sp_dict, mode)) for
                      neighbor_sn, (i, o) in sn_sp]
     in_out_sn = [n for (i, o), n in super_n_nodes if (i, o) == (in_node, out_node)]
     ret = []
@@ -81,10 +82,10 @@ def nodes_s_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_di
     return ret
 
 
-def nodes_p_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict):
+def nodes_p_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict, mode):
     sn_sp = [(neighbor_sn, sp_dict[(neighbor_sn, current_sn)]) for neighbor_sn in
              tree.networkx_graph().neighbors(current_sn) if neighbor_sn != parent_sn]
-    super_n_nodes = [spqr_nodes_actual_path(neighbor_sn, current_sn, tree, g, i, o, sp_dict) for neighbor_sn, (i, o) in
+    super_n_nodes = [spqr_nodes_actual_path(neighbor_sn, current_sn, tree, g, i, o, sp_dict, mode) for neighbor_sn, (i, o) in
                      sn_sp]
     ret = max(super_n_nodes, key=len)
     ret = ret + [in_node, out_node] if not parent_sn else ret
@@ -92,7 +93,7 @@ def nodes_p_actual_path(current_sn, parent_sn, tree, g, in_node, out_node, sp_di
     return ret
 
 
-def get_comp_path(component, in_node, out_node):
+def get_comp_path(component, in_node, out_node, mode=LSP_MODE):
     # print(f"s:{s}, t:{t}")
     #     with open('D:/Heuristic Tests/improved_spqr_results/'+str(cur_t)+'r_size.txt', "a+") as f:
     #         f.write(f'\ncomp len -- {len(component)}\n')
@@ -109,6 +110,6 @@ def get_comp_path(component, in_node, out_node):
     sp_dict = edge_seperators(tree)
     root_node = find_root_sn(tree, in_node, out_node)
     #     print(root_node)
-    path = spqr_nodes_actual_path(root_node, [], tree, comp, min(in_node, out_node), max(in_node, out_node), sp_dict)
+    path = spqr_nodes_actual_path(root_node, [], tree, comp, min(in_node, out_node), max(in_node, out_node), sp_dict, mode)
     # print('ret', res)
     return path

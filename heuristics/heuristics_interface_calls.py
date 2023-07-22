@@ -33,13 +33,13 @@ def snake_ex_pairs_using_spqr_prune_old(state, G, target, is_incremental=False, 
 
 def snake_ex_pairs_using_spqr_prune(state, G, target, is_incremental=False, x_filter=False, y_filter=False, in_neighbors=False, out_neighbors=False):
     if is_incremental:
-        return ex_pairs_incremental(state, G, target, lambda g, i, o: snake_exclusion_pairs_spqr_old(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE, prune=True)
-    return ex_pairs(state, G, target, lambda g,i,o: snake_exclusion_pairs_spqr(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE, prune=True)
+        return ex_pairs_incremental(state, G, target, lambda g, i, o: get_max_nodes_spqr_snake(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE, prune=True)
+    return ex_pairs(state, G, target, lambda g,i,o: get_max_nodes_spqr_snake(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE, prune=True)
 
-def snake_ex_pairs_using_spqr(state, G, target, is_incremental=False, x_filter=False, y_filter=False, in_neighbors=False, out_neighbors=False):
-    if is_incremental:
-        return ex_pairs_incremental(state, G, target, lambda g, i, o: get_max_nodes_spqr_snake(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE)
-    return ex_pairs(state, G, target, lambda g,i,o: get_max_nodes_spqr_snake(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE)
+# def snake_ex_pairs_using_spqr(state, G, target, is_incremental=False, x_filter=False, y_filter=False, in_neighbors=False, out_neighbors=False):
+#     if is_incremental:
+#         return ex_pairs_incremental(state, G, target, lambda g, i, o: get_max_nodes_spqr_snake(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE)
+#     return ex_pairs(state, G, target, lambda g,i,o: get_max_nodes_spqr_snake(g, i, o, x_filter, y_filter, in_neighbors, out_neighbors), mode=SNAKE_MODE)
 
 
 def snake_rec_spqr(state, G, target, is_incremental=False):
@@ -48,14 +48,14 @@ def snake_rec_spqr(state, G, target, is_incremental=False):
     return ex_pairs(state, G, target, lambda g,i,o: get_max_nodes_spqr_recursive(g, i, o), mode=SNAKE_MODE)
 
 
-snake_only = lambda state, G, target, incremental: snake_ex_pairs_using_spqr(state, G, target, incremental)
+# snake_only = lambda state, G, target, incremental: snake_ex_pairs_using_spqr(state, G, target, incremental)
 snake_only_prune = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune(state, G, target, incremental)
 snake_y_old = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune_old(state, G, target, incremental, y_filter=True)
 
 snake_y = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune(state, G, target, incremental, y_filter=True)
-snake_y_in_neighbors = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune(state, G, target, incremental, y_filter=True, in_neighbors=True)
-snake_y_all_neighbors = lambda state, G, target, incremental: snake_ex_pairs_using_spqr(state, G, target, incremental, y_filter=True, in_neighbors=True, out_neighbors=True)
-snake_y_all_neighbors_prune = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune(state, G, target, incremental, y_filter=True, in_neighbors=True, out_neighbors=True)
+# snake_y_in_neighbors = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune(state, G, target, incremental, y_filter=True, in_neighbors=True)
+# snake_y_all_neighbors = lambda state, G, target, incremental: snake_ex_pairs_using_spqr(state, G, target, incremental, y_filter=True, in_neighbors=True, out_neighbors=True)
+# snake_y_all_neighbors_prune = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune(state, G, target, incremental, y_filter=True, in_neighbors=True, out_neighbors=True)
 
 # snake_y = lambda state, G, target, incremental: snake_ex_pairs_using_spqr_prune(state, G, target, incremental, y_filter=True)
 # snake_rec = lambda state, G, target, incremental: snake_ex_pairs_using_rec_spqr(state, G, target, incremental, y_filter=True, in_neighbors=True)
