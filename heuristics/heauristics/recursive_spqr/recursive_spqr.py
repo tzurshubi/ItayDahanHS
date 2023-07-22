@@ -92,7 +92,7 @@ def nodes_r(current_sn, parent_sn, tree, g, in_node, out_node, sp_dict):
     easy_nodes = [n for n, (e1, e2) in easy_cut_nodes]
     easy_nodes += [super_n_nodes_dict[e] for e in diff(super_n_nodes_dict.keys(), flatten(cut_edges) + in_out_edges)]
 
-    s_t_cuts = [(e1, e2) for e1, e2 in cut_edges if (e1 in in_edges and e2 in out_edges) or (e2 in in_edges and e1 in out_edges)]
+    # s_t_cuts = [(e1, e2) for e1, e2 in cut_edges if (e1 in in_edges and e2 in out_edges) or (e2 in in_edges and e1 in out_edges)]
     # if s_t_cuts:
     #     print(s_t_cuts)
     #     with open('D:/Heuristic Tests/improved_spqr_results/ ' +str(cur_t ) +'s_t_cut.txt', "a+") as f:

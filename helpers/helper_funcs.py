@@ -556,6 +556,7 @@ def remove_blocks_rectangles_2(n, mat, og_mat):
             break
     return [[0 if (int(i/2)*2, int(j/2)*2) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]
 
+
 def get_star_coords(x,y,len_x, len_y):
     ys = [y]
     if y>0:
@@ -626,3 +627,35 @@ def remove_blocks_for_new_spqr_on_path(n, mat, paths):
         if not free_i:
             break
     return [[0 if (i,j) in bis else mat[i][j] for j in range(len(mat[0]))] for i in range(len(mat))]
+
+
+def max_disj_constraints_actual_set(graph, s, t, y_filter=True, rectangle_filter=True, x_filter=False):
+    g = graph.copy()
+    g.remove_node(s)
+    g.remove_node(t)
+    if y_filter:
+        while g.nodes:
+            x = max(g.nodes, key=lambda x: g.degree[x])
+            if g.degree[x] < 3:
+                break
+            y = []
+            for n in [x] + list(random.sample(list(g.neighbors(x)), 3)):
+                y += [n]
+                g.remove_node(n)
+    elif x_filter:
+        while g.nodes:
+            x = max(g.nodes, key=lambda x: g.degree[x])
+            if g.degree[x] < 4:
+                break
+            for n in [x] + list(g.neighbors(x)):
+                g.remove_node(n)
+    if rectangle_filter:
+        while g.nodes:
+            cycles = nx.simple_cycles(g)
+            if not cycles:
+                break
+            for c in cycles:
+                if includes(g.nodes, c):
+                    loser_node = random.choice(c)
+                    g.remove_node(loser_node)
+    return list(g.nodes)
