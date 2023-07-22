@@ -43,8 +43,8 @@ def snake_ex_pairs_using_spqr_prune(state, G, target, is_incremental=False, x_fi
 
 def snake_rec_spqr(state, G, target, is_incremental=False):
     if is_incremental:
-        return ex_pairs_incremental(state, G, target, lambda g, i, o: get_max_nodes_spqr_recursive(g, i, o), mode=SNAKE_MODE)
-    return ex_pairs(state, G, target, lambda g,i,o: get_max_nodes_spqr_recursive(g, i, o), mode=SNAKE_MODE)
+        return ex_pairs_incremental(state, G, target, lambda g, i, o: get_max_nodes_spqr_recursive_snake(g, i, o), mode=SNAKE_MODE)
+    return ex_pairs(state, G, target, lambda g,i,o: get_max_nodes_spqr_recursive_snake(g, i, o), mode=SNAKE_MODE)
 
 
 # snake_only = lambda state, G, target, incremental: snake_ex_pairs_using_spqr(state, G, target, incremental)
