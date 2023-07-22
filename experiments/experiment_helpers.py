@@ -11,7 +11,7 @@ from helpers.helper_funcs import draw_grid
 from heuristics.heauristics.other_heuristics import count_nodes_bcc_x, count_nodes_bcc_y, count_nodes_bcc
 from heuristics.heuristics_interface_calls import snake_rec_spqr, spqr_recursive_h, \
     ex_pairs_using_spqr, ex_pairs_using_reg_flow, ex_pairs_using_lp, snake_only_prune, snake_y, \
-    ex_pairs_using_old_spqr
+    ex_pairs_using_old_spqr, snake_y_old
 
 heuristics_lib = [
         # ["bcc x", count_nodes_bcc_x, False],
@@ -28,7 +28,7 @@ heuristics_lib = [
     ["spqr rec", spqr_recursive_h, True]
 ]
 other_heuristic_lib = [
-    ["spqr rec", spqr_recursive_h, True]
+    ["alternative", spqr_recursive_h, True]
 
 ]
 
@@ -43,7 +43,7 @@ snake_heuristics_lib = [
     #     ["snake spqr", snake_only, True],
     # ["snake spqr prune", snake_only_prune, True],
     #
-        # ["snake y prune old", snake_y, True],
+        ["snake y prune old", snake_y_old, True],
     ["snake y prune new", snake_y, True],
 
     # ["snake spqr y in neighbors", snake_y_in_neighbors, True],

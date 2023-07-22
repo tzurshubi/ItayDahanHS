@@ -6,6 +6,7 @@ from Definitions.state import State
 from algorithms.search_algorithms.actual_path.with_spqr.run_other import run_other
 from algorithms.search_algorithms.actual_path.with_spqr.with_spqr import get_comp_path
 from algorithms.search_algorithms.a_star.run_weighted_astar import run_weighted
+from algorithms.search_algorithms.dfbnb.run_dfbnb import run_dfbnb
 from experiments.experiment_helpers import write_header_file, write_to_file, write_to_csv_file, save_heuristic_plot, \
     save_graph_picture, convert_to_latex, create_graphs_from_folder, heuristics_lib, snake_heuristics_lib, \
     other_heuristic_lib
@@ -84,6 +85,13 @@ def search_experiment(graph=-9, start_node=-9, target_node=-9, world=GRIDS_MODE,
 
     elif world == CUBE_MODE:
         graphs = [(0, 0, graph, start_node, target_node, 0)]
+        run_experiment(graphs, snake_heuristics_lib, save_dir, csv_file_name, plot_dir, graph_dir,
+                       latex_file_name, world=world, mode=SNAKE_MODE, n=n, algorithm=run_weighted)
+        run_experiment(graphs, snake_heuristics_lib, save_dir, csv_file_name, plot_dir, graph_dir,
+                       latex_file_name, world=world, mode=SNAKE_MODE, n=n, algorithm=run_dfbnb)
+        # run_experiment(graphs, snake_heuristics_lib, save_dir, csv_file_name, plot_dir, graph_dir,
+        #                latex_file_name, world=world, mode=SNAKE_MODE, n=n, algorithm=run_other)
+
 
 def run_experiment(graphs, heuristics, save_dir, csv_file_name, plot_dir, graph_dir, latex_file_name, world=GRIDS_MODE, mode=LSP_MODE, n=None, algorithm=run_weighted):
     i = 0
@@ -119,7 +127,7 @@ def run_experiment(graphs, heuristics, save_dir, csv_file_name, plot_dir, graph_
                                                                       mode=mode
                                                                       )
                 print("path length: ", len(path) - 1, '\npath: ', path)
-                draw_grid(name, graph, mat, start, target, itn, path=path)
+                # draw_grid(name, graph, mat, start, target, itn, path=path)
                 if algorithm != run_other:
                     print("path length: ", len(path) - 1, '\npath: ', path)
                     sum_path_lengths[name] += len(path) - 1
@@ -142,7 +150,7 @@ def run_experiment(graphs, heuristics, save_dir, csv_file_name, plot_dir, graph_
                 if n is not None:
                     # write_to_file(text_file_name, n, name, graph, expansions, runtime, hs,
                     #               ls, -1, w, -1)
-                    write_to_csv_file(csv_file_name, n, name, expansions, runtime, last_hs, w, first_hs, ng)
+                    write_to_csv_file(csv_file_name, n, name, expansions, runtime, last_hs, w, len(path) + 1, 'dfbnb' if algorithm == run_dfbnb else 'a*')
                 else:
                     write_to_csv_file(csv_file_name, graph_i, name, expansions, runtime, -9999, first_hs, len(path), ng)
             if world in (GRIDS_MODE, MAZE_MODE) and algorithm != run_other:
